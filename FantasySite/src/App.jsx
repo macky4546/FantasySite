@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 // Assuming Tailwind CSS is configured and available globally for styling
 
-// Player Data with Tiers extracted from the provided CSV file (players.xlsx - Sheet1.csv)
-// Team data has been manually added for each player.
+// Mock Player Data with Tiers extracted from the provided CSV file (players.xlsx - Sheet1.csv)
+// This will be replaced by a fetch call to a backend service.
 const mockPlayersData = [
   { id: 1, name: 'Ja\'Marr Chase', position: 'WR', team: 'CIN', adp: 1.41, tier: 'Tier 1' },
   { id: 2, name: 'Bijan Robinson', position: 'RB', team: 'ATL', adp: 2.19, tier: 'Tier 1' },
