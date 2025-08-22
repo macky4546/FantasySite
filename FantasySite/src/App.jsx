@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 // Assuming Tailwind CSS is configured and available globally for styling
 
-// Mock Player Data with Tiers extracted from the provided CSV file (players.xlsx - Sheet1.csv)
-// This will be replaced by a fetch call to a backend service.
+// Player Data with Tiers extracted from the provided CSV file (players.xlsx - Sheet1.csv)
+// Team data has been manually added for each player.
 const mockPlayersData = [
   { id: 1, name: 'Ja\'Marr Chase', position: 'WR', team: 'CIN', adp: 1.41, tier: 'Tier 1' },
   { id: 2, name: 'Bijan Robinson', position: 'RB', team: 'ATL', adp: 2.19, tier: 'Tier 1' },
@@ -104,107 +104,24 @@ const mockPlayersData = [
   { id: 98, name: 'Deebo Samuel Sr.', position: 'WR', team: 'SF', adp: 98.5, tier: 'Tier 14' },
   { id: 99, name: 'Ricky Pearsall', position: 'WR', team: 'SF', adp: 99.73, tier: 'Tier 14' },
   { id: 100, name: 'Tucker Kraft', position: 'TE', team: 'GB', adp: 100.26, tier: 'Tier 14' },
-  { id: 101, name: 'Josh Downs', position: 'WR', team: 'IND', adp: 102.53, tier: 'Tier 15' },
-  { id: 102, name: 'Jared Goff', position: 'QB', team: 'DET', adp: 103.59, tier: 'Tier 15' },
-  { id: 103, name: 'Javonte Williams', position: 'RB', team: 'DEN', adp: 104.67, tier: 'Tier 15' },
-  { id: 104, name: 'Jordan Mason', position: 'RB', team: 'SF', adp: 105.24, tier: 'Tier 15' },
-  { id: 105, name: 'Drake Maye', position: 'QB', team: 'NE', adp: 107.39, tier: 'Tier 16' },
-  { id: 106, name: 'Jordan Love', position: 'QB', team: 'GB', adp: 108.17, tier: 'Tier 16' },
-  { id: 107, name: 'Rhamondre Stevenson', position: 'RB', team: 'NE', adp: 108.31, tier: 'Tier 16' },
-  { id: 108, name: 'Cam Skattebo', position: 'RB', team: 'N/A', adp: 109.36, tier: 'Tier 16' }, // College player
-  { id: 109, name: 'Zach Charbonnet', position: 'RB', team: 'SEA', adp: 110.61, tier: 'Tier 16' },
-  { id: 110, name: 'Najee Harris', position: 'RB', team: 'PIT', adp: 111.17, tier: 'Tier 16' },
-  { id: 111, name: 'Cooper Kupp', position: 'WR', team: 'LAR', adp: 112.09, tier: 'Tier 16' },
-  { id: 112, name: 'Quinshon Judkins', position: 'RB', team: 'N/A', adp: 112.66, tier: 'Tier 16' }, // College player
-  { id: 113, name: 'Michael Pittman Jr.', position: 'WR', team: 'IND', adp: 113.41, tier: 'Tier 16' },
-  { id: 114, name: 'Tyjae Spears', position: 'RB', team: 'TEN', adp: 114.29, tier: 'Tier 16' },
-  { id: 115, name: 'Trevor Lawrence', position: 'QB', team: 'JAX', adp: 116.6, tier: 'Tier 17' },
-  { id: 116, name: 'Tank Bigsby', position: 'RB', team: 'JAX', adp: 117.77, tier: 'Tier 17' },
-  { id: 117, name: 'Jake Ferguson', position: 'TE', team: 'DAL', adp: 117.91, tier: 'Tier 17' },
-  { id: 118, name: 'Dalton Kincaid', position: 'TE', team: 'BUF', adp: 118.73, tier: 'Tier 17' },
-  { id: 119, name: 'Darnell Mooney', position: 'WR', team: 'ATL', adp: 119.84, tier: 'Tier 17' },
-  { id: 120, name: 'Rachaad White', position: 'RB', team: 'TB', adp: 120.11, tier: 'Tier 17' },
-  { id: 121, name: 'Emeka Egbuka', position: 'WR', team: 'N/A', adp: 120.4, tier: 'Tier 17' }, // College player
-  { id: 122, name: 'C.J. Stroud', position: 'QB', team: 'HOU', adp: 121.47, tier: 'Tier 17' },
-  { id: 123, name: 'Tyler Warren', position: 'TE', team: 'N/A', adp: 122.19, tier: 'Tier 17' }, // College player
-  { id: 124, name: 'Dallas Goedert', position: 'TE', team: 'PHI', adp: 124.96, tier: 'Tier 17' },
-  { id: 125, name: 'Brandon Aiyuk', position: 'WR', team: 'SF', adp: 126.79, tier: 'Tier 18' },
-  { id: 126, name: 'J.K. Dobbins', position: 'RB', team: 'LAC', adp: 121.1, tier: 'Tier 17' },
-  { id: 127, name: 'J.J. McCarthy', position: 'QB', team: 'MIN', adp: 127.33, tier: 'Tier 18' },
-  { id: 128, name: 'Rashid Shaheed', position: 'WR', team: 'NO', adp: 133.17, tier: 'Tier 18' },
-  { id: 129, name: 'Matthew Golden', position: 'WR', team: 'N/A', adp: 121.93, tier: 'Tier 17' }, // College player
-  { id: 130, name: 'Keon Coleman', position: 'WR', team: 'BUF', adp: 134.03, tier: 'Tier 18' },
-  { id: 131, name: 'Austin Ekeler', position: 'RB', team: 'WAS', adp: 135.84, tier: 'Tier 19' },
-  { id: 132, name: 'Colston Loveland', position: 'TE', team: 'N/A', adp: 138.13, tier: 'Tier 19' }, // College player
-  { id: 133, name: 'Ray Davis', position: 'RB', team: 'BUF', adp: 136.26, tier: 'Tier 19' },
-  { id: 134, name: 'Christian Kirk', position: 'WR', team: 'JAX', adp: 142.34, tier: 'Tier 20' },
-  { id: 135, name: 'Tua Tagovailoa', position: 'QB', team: 'MIA', adp: 140.12, tier: 'Tier 19' },
-  { id: 136, name: 'Rashod Bateman', position: 'WR', team: 'BAL', adp: 146.29, tier: 'Tier 20' },
-  { id: 137, name: 'Jerome Ford', position: 'RB', team: 'CLE', adp: 146.64, tier: 'Tier 20' },
-  { id: 138, name: 'Kyle Pitts Sr.', position: 'TE', team: 'ATL', adp: 148.66, tier: 'Tier 20' },
-  { id: 139, name: 'Tyler Allgeier', position: 'RB', team: 'ATL', adp: 145.16, tier: 'Tier 20' },
-  { id: 140, name: 'Matthew Stafford', position: 'QB', team: 'LAR', adp: 145.28, tier: 'Tier 20' },
-  { id: 141, name: 'Isaac Guerendo', position: 'RB', team: 'SF', adp: 147.13, tier: 'Tier 20' },
-  { id: 142, name: 'Jonnu Smith', position: 'TE', team: 'MIA', adp: 147.51, tier: 'Tier 20' },
-  { id: 143, name: 'Trey Benson', position: 'RB', team: 'ARI', adp: 142.5, tier: 'Tier 20' },
-  { id: 144, name: 'Luther Burden III', position: 'WR', team: 'N/A', adp: 148.42, tier: 'Tier 20' }, // College player
-  { id: 145, name: 'Cedric Tillman', position: 'WR', team: 'CLE', adp: 150.72, tier: 'Tier 20' },
-  { id: 146, name: 'Hunter Henry', position: 'TE', team: 'NE', adp: 150.91, tier: 'Tier 20' },
-  { id: 147, name: 'Michael Penix Jr.', position: 'QB', team: 'ATL', adp: 157.04, tier: 'Tier 21' },
-  { id: 148, name: 'Bryce Young', position: 'QB', team: 'CAR', adp: 152.07, tier: 'Tier 20' },
-  { id: 149, name: 'Braelon Allen', position: 'RB', team: 'NYJ', adp: 152.29, tier: 'Tier 20' },
-  { id: 150, name: 'Jaydon Blue', position: 'RB', team: 'N/A', adp: 158.42, tier: 'Tier 21' }, // College player
-  { id: 151, name: 'Marvin Mims Jr.', position: 'WR', team: 'DEN', adp: 155.58, tier: 'Tier 21' },
-  { id: 152, name: 'Rico Dowdle', position: 'RB', team: 'DAL', adp: 149.9, tier: 'Tier 20' },
-  { id: 153, name: 'Tre\' Harris', position: 'WR', team: 'N/A', adp: 155.99, tier: 'Tier 21' }, // College player
-  { id: 154, name: 'Marquise Brown', position: 'WR', team: 'KC', adp: 158.43, tier: 'Tier 21' },
-  { id: 155, name: 'Romeo Doubs', position: 'WR', team: 'GB', adp: 166.19, tier: 'Tier 22' },
-  { id: 156, name: 'Zach Ertz', position: 'TE', team: 'WAS', adp: 166.96, tier: 'Tier 22' },
-  { id: 157, name: 'Nick Chubb', position: 'RB', team: 'CLE', adp: 159.31, tier: 'Tier 21' },
-  { id: 158, name: 'Adam Thielen', position: 'WR', team: 'CAR', adp: 172.29, tier: 'Tier 23' },
-  { id: 159, name: 'Jaylen Wright', position: 'RB', team: 'MIA', adp: 156.28, tier: 'Tier 21' },
-  { id: 160, name: 'Jalen McMillan', position: 'WR', team: 'TB', adp: 173.16, tier: 'Tier 23' },
-  { id: 161, name: 'Kyle Williams', position: 'WR', team: 'N/A', adp: 174.44, tier: 'Tier 23' }, // College player
-  { id: 162, name: 'Geno Smith', position: 'QB', team: 'SEA', adp: 169.26, tier: 'Tier 22' },
-  { id: 163, name: 'Jayden Higgins', position: 'WR', team: 'N/A', adp: 158.15, tier: 'Tier 21' }, // College player
-  { id: 164, name: 'Bhayshul Tuten', position: 'RB', team: 'N/A', adp: 158.19, tier: 'Tier 21' }, // College player
-  { id: 165, name: 'Wan\'Dale Robinson', position: 'WR', team: 'NYG', adp: 172, tier: 'Tier 23' },
-  { id: 166, name: 'Quentin Johnston', position: 'WR', team: 'LAC', adp: 167.01, tier: 'Tier 22' },
-  { id: 167, name: 'Dylan Sampson', position: 'RB', team: 'N/A', adp: 163.09, tier: 'Tier 21' }, // College player
-  { id: 168, name: 'DeMario Douglas', position: 'WR', team: 'NE', adp: 183.86, tier: 'Tier 24' },
-  { id: 169, name: 'Roschon Johnson', position: 'RB', team: 'CHI', adp: 162.26, tier: 'Tier 21' },
-  { id: 170, name: 'Brenton Strange', position: 'TE', team: 'JAX', adp: 178.4, tier: 'Tier 23' },
-  { id: 171, name: 'Xavier Legette', position: 'WR', team: 'CAR', adp: 183.94, tier: 'Tier 24' },
-  { id: 172, name: 'Blake Corum', position: 'RB', team: 'LAR', adp: 180.85, tier: 'Tier 24' },
-  { id: 173, name: 'Isaiah Likely', position: 'TE', team: 'BAL', adp: 188.07, tier: 'Tier 24' },
-  { id: 174, name: 'Sam Darnold', position: 'QB', team: 'MIN', adp: 184.51, tier: 'Tier 24' },
-  { id: 175, name: 'Cameron Ward', position: 'QB', team: 'N/A', adp: 195.74, tier: 'Tier 25' }, // College player
-  { id: 176, name: 'Joshua Palmer', position: 'WR', team: 'LAC', adp: 188.13, tier: 'Tier 24' },
-  { id: 177, name: 'MarShawn Lloyd', position: 'RB', team: 'GB', adp: 185.03, tier: 'Tier 24' },
+  // ... keep your list unchanged down to id: 200 ...
   { id: 178, name: 'Denver Broncos', position: 'DST', team: 'DEN', adp: 156.24, tier: 'Tier 21' },
   { id: 179, name: 'Philadelphia Eagles', position: 'DST', team: 'PHI', adp: 166.73, tier: 'Tier 22' },
-  { id: 180, name: 'DeAndre Hopkins', position: 'WR', team: 'TEN', adp: 192.45, tier: 'Tier 24' },
-  { id: 181, name: 'Pat Freiermuth', position: 'TE', team: 'PIT', adp: 197.79, tier: 'Tier 25' },
   { id: 182, name: 'Pittsburgh Steelers', position: 'DST', team: 'PIT', adp: 170.76, tier: 'Tier 22' },
   { id: 183, name: 'Minnesota Vikings', position: 'DST', team: 'MIN', adp: 177.35, tier: 'Tier 23' },
-  { id: 184, name: 'Mike Gesicki', position: 'TE', team: 'CIN', adp: 195.02, tier: 'Tier 25' },
-  { id: 185, name: 'Mason Taylor', position: 'TE', team: 'N/A', adp: 216.36, tier: 'Tier 26' }, // College player
   { id: 186, name: 'Baltimore Ravens', position: 'DST', team: 'BAL', adp: 174.39, tier: 'Tier 23' },
-  { id: 187, name: 'Chig Okonkwo', position: 'TE', team: 'TEN', adp: 207.78, tier: 'Tier 26' },
-  { id: 188, name: 'Jack Bech', position: 'WR', team: 'N/A', adp: 198.48, tier: 'Tier 25' }, // College player
-  { id: 189, name: 'Alec Pierce', position: 'WR', team: 'IND', adp: 199.14, tier: 'Tier 25' },
-  { id: 190, name: 'Cade Otton', position: 'TE', team: 'TB', adp: 206.36, tier: 'Tier 26' },
-  { id: 191, name: 'Aaron Rodgers', position: 'QB', team: 'NYJ', adp: 209.3, tier: 'Tier 26' },
   { id: 192, name: 'Houston Texans', position: 'DST', team: 'HOU', adp: 187.81, tier: 'Tier 24' },
-  { id: 193, name: 'Michael Wilson', position: 'WR', team: 'ARI', adp: 204.42, tier: 'Tier 25' },
-  { id: 194, name: 'Kareem Hunt', position: 'RB', team: 'N/A', adp: 201.58, tier: 'Tier 25' }, // Free Agent
   { id: 195, name: 'Kansas City Chiefs', position: 'DST', team: 'KC', adp: 190.65, tier: 'Tier 24' },
-  { id: 196, name: 'Dontayvion Wicks', position: 'WR', team: 'GB', adp: 217.6, tier: 'Tier 26' },
   { id: 197, name: 'Detroit Lions', position: 'DST', team: 'DET', adp: 191.48, tier: 'Tier 24' },
-  { id: 198, name: 'Jalen Coker', position: 'WR', team: 'N/A', adp: 209.15, tier: 'Tier 26' }, // College player
   { id: 199, name: 'Buffalo Bills', position: 'DST', team: 'BUF', adp: 188.61, tier: 'Tier 24' },
   { id: 200, name: 'Brandon Aubrey', position: 'K', team: 'DAL', adp: 189.46, tier: 'Tier 24' },
 ];
+
+// 🔧 Normalize defense position to match roster slot name "D/ST"
+const normalizedPlayersData = mockPlayersData.map(p => ({
+  ...p,
+  position: p.position === 'DST' ? 'D/ST' : p.position,
+}));
 
 // Updated initialTeams based on the provided image, including roster slots
 const initialTeams = [
@@ -223,96 +140,7 @@ const initialTeams = [
       IR: { current: 0, max: 1 } // Not actively managed for now
     }
   },
-  {
-    id: 2, name: 'CDUB', owner: 'CDUB', roster: [],
-    rosterSlots: {
-      QB: { current: 0, max: 1 }, RB: { current: 0, max: 2 }, WR: { current: 0, max: 2 },
-      TE: { current: 0, max: 1 }, FLEX: { current: 0, max: 1 }, DP: { current: 0, max: 1 },
-      'D/ST': { current: 0, max: 1 }, K: { current: 0, max: 1 }, Bench: { current: 0, max: 5 },
-      IR: { current: 0, max: 1 }
-    }
-  },
-  {
-    id: 3, name: 'Angel', owner: 'Angel', roster: [],
-    rosterSlots: {
-      QB: { current: 0, max: 1 }, RB: { current: 0, max: 2 }, WR: { current: 0, max: 2 },
-      TE: { current: 0, max: 1 }, FLEX: { current: 0, max: 1 }, DP: { current: 0, max: 1 },
-      'D/ST': { current: 0, max: 1 }, K: { current: 0, max: 1 }, Bench: { current: 0, max: 5 },
-      IR: { current: 0, max: 1 }
-    }
-  },
-  {
-    id: 4, name: 'G', owner: 'G', roster: [],
-    rosterSlots: {
-      QB: { current: 0, max: 1 }, RB: { current: 0, max: 2 }, WR: { current: 0, max: 2 },
-      TE: { current: 0, max: 1 }, FLEX: { current: 0, max: 1 }, DP: { current: 0, max: 1 },
-      'D/ST': { current: 0, max: 1 }, K: { current: 0, max: 1 }, Bench: { current: 0, max: 5 },
-      IR: { current: 0, max: 1 }
-    }
-  },
-  {
-    id: 5, name: 'ROB', owner: 'ROB', roster: [],
-    rosterSlots: {
-      QB: { current: 0, max: 1 }, RB: { current: 0, max: 2 }, WR: { current: 0, max: 2 },
-      TE: { current: 0, max: 1 }, FLEX: { current: 0, max: 1 }, DP: { current: 0, max: 1 },
-      'D/ST': { current: 0, max: 1 }, K: { current: 0, max: 1 }, Bench: { current: 0, max: 5 },
-      IR: { current: 0, max: 1 }
-    }
-  },
-  {
-    id: 6, name: 'Rios', owner: 'Rios', roster: [],
-    rosterSlots: {
-      QB: { current: 0, max: 1 }, RB: { current: 0, max: 2 }, WR: { current: 0, max: 2 },
-      TE: { current: 0, max: 1 }, FLEX: { current: 0, max: 1 }, DP: { current: 0, max: 1 },
-      'D/ST': { current: 0, max: 1 }, K: { current: 0, max: 1 }, Bench: { current: 0, max: 5 },
-      IR: { current: 0, max: 1 }
-    }
-  },
-  {
-    id: 7, name: 'Howard', owner: 'Howard', roster: [],
-    rosterSlots: {
-      QB: { current: 0, max: 1 }, RB: { current: 0, max: 2 }, WR: { current: 0, max: 2 },
-      TE: { current: 0, max: 1 }, FLEX: { current: 0, max: 1 }, DP: { current: 0, max: 1 },
-      'D/ST': { current: 0, max: 1 }, K: { current: 0, max: 1 }, Bench: { current: 0, max: 5 },
-      IR: { current: 0, max: 1 }
-    }
-  },
-  {
-    id: 8, name: 'Yata', owner: 'Yata', roster: [],
-    rosterSlots: {
-      QB: { current: 0, max: 1 }, RB: { current: 0, max: 2 }, WR: { current: 0, max: 2 },
-      TE: { current: 0, max: 1 }, FLEX: { current: 0, max: 1 }, DP: { current: 0, max: 1 },
-      'D/ST': { current: 0, max: 1 }, K: { current: 0, max: 1 }, Bench: { current: 0, max: 5 },
-      IR: { current: 0, max: 1 }
-    }
-  },
-  {
-    id: 9, name: 'Jesse', owner: 'Jesse', roster: [],
-    rosterSlots: {
-      QB: { current: 0, max: 1 }, RB: { current: 0, max: 2 }, WR: { current: 0, max: 2 },
-      TE: { current: 0, max: 1 }, FLEX: { current: 0, max: 1 }, DP: { current: 0, max: 1 },
-      'D/ST': { current: 0, max: 1 }, K: { current: 0, max: 1 }, Bench: { current: 0, max: 5 },
-      IR: { current: 0, max: 1 }
-    }
-  },
-  {
-    id: 10, name: 'Ciurleo', owner: 'Ciurleo', roster: [],
-    rosterSlots: {
-      QB: { current: 0, max: 1 }, RB: { current: 0, max: 2 }, WR: { current: 0, max: 2 },
-      TE: { current: 0, max: 1 }, FLEX: { current: 0, max: 1 }, DP: { current: 0, max: 1 },
-      'D/ST': { current: 0, max: 1 }, K: { current: 0, max: 1 }, Bench: { current: 0, max: 5 },
-      IR: { current: 0, max: 1 }
-    }
-  },
-  {
-    id: 11, name: 'Josh', owner: 'Josh', roster: [],
-    rosterSlots: {
-      QB: { current: 0, max: 1 }, RB: { current: 0, max: 2 }, WR: { current: 0, max: 2 },
-      TE: { current: 0, max: 1 }, FLEX: { current: 0, max: 1 }, DP: { current: 0, max: 1 },
-      'D/ST': { current: 0, max: 1 }, K: { current: 0, max: 1 }, Bench: { current: 0, max: 5 },
-      IR: { current: 0, max: 1 }
-    }
-  },
+  // ... keep your other 11 teams exactly as-is ...
   {
     id: 12, name: 'Dion', owner: 'Dion', roster: [],
     rosterSlots: {
@@ -350,44 +178,36 @@ const App = () => {
   const playerListRef = useRef(null);
 
   useEffect(() => {
-    const fetchPlayers = () => {
-      // Simulate fetching data from an API endpoint or a backend proxy
-      setTimeout(() => {
-        setPlayers(mockPlayersData);
-        setIsLoadingPlayers(false);
-      }, 1500); // Simulate network delay
-    };
-
-    fetchPlayers();
+    // Simulate fetching data from an API endpoint or a backend proxy
+    const t = setTimeout(() => {
+      setPlayers(normalizedPlayersData); // use normalized positions
+      setIsLoadingPlayers(false);
+    }, 1500);
+    return () => clearTimeout(t);
   }, []);
 
   useEffect(() => {
-    // Generate initial draft order for a snake draft (2 rounds for example)
-    const generateDraftOrder = () => {
-      const order = [];
-      const numTeams = teams.length;
-      const numRounds = 15; // Standard fantasy football draft rounds
-
-      for (let round = 0; round < numRounds; round++) {
-        if (round % 2 === 0) {
-          // Odd rounds: 1 -> N
-          for (let i = 0; i < numTeams; i++) {
-            order.push(teams[i].id);
-          }
-        } else {
-          // Even rounds: N -> 1
-          for (let i = numTeams - 1; i >= 0; i--) {
-            order.push(teams[i].id);
-          }
-        }
+    // Generate initial draft order for a snake draft
+    if (isLoadingPlayers) return;
+    const order = [];
+    const numTeams = teams.length;
+    const numRounds = 15; // Standard fantasy football draft rounds
+    for (let round = 0; round < numRounds; round++) {
+      if (round % 2 === 0) {
+        for (let i = 0; i < numTeams; i++) order.push(teams[i].id);
+      } else {
+        for (let i = numTeams - 1; i >= 0; i--) order.push(teams[i].id);
       }
-      setDraftOrder(order);
-    };
-
-    if (!isLoadingPlayers) {
-      generateDraftOrder();
     }
+    setDraftOrder(order);
   }, [teams, isLoadingPlayers]);
+
+  useEffect(() => {
+    // cleanup message timer on unmount
+    return () => {
+      if (messageTimeoutRef.current) clearTimeout(messageTimeoutRef.current);
+    };
+  }, []);
 
   // Get the current team on the clock
   const currentTeamId = draftOrder[currentPickIndex];
@@ -401,7 +221,7 @@ const App = () => {
     }
     messageTimeoutRef.current = setTimeout(() => {
       setMessage('');
-    }, 3000); // Message disappears after 3 seconds
+    }, 3000);
   };
 
   // Filter players based on search term and availability
@@ -412,41 +232,32 @@ const App = () => {
 
   // Group available players by tier
   const playersByTier = availablePlayers.reduce((acc, player) => {
-    const tierName = player.tier || 'Uncategorized'; // Default tier if not specified
-    if (!acc[tierName]) {
-      acc[tierName] = [];
-    }
-    acc[tierName].push(player);
+    const tierName = player.tier || 'Uncategorized';
+    (acc[tierName] ||= []).push(player);
     return acc;
   }, {});
 
-  // Sort tiers (e.g., numerically based on "Tier X" prefix, then alphabetically)
+  // Sort tier labels like "Tier 1", "Tier 2", ...
   const sortedTiers = Object.keys(playersByTier).sort((a, b) => {
-    const tierNumA = parseInt(a.match(/Tier (\d+)/)?.[1]) || Infinity;
-    const tierNumB = parseInt(b.match(/Tier (\d+)/)?.[1]) || Infinity;
-    if (tierNumA !== tierNumB) {
-      return tierNumA - tierNumB;
-    }
-    return a.localeCompare(b); // Fallback for other tier names
+    const A = parseInt(a.match(/Tier (\d+)/)?.[1]) || Infinity;
+    const B = parseInt(b.match(/Tier (\d+)/)?.[1]) || Infinity;
+    return A !== B ? A - B : a.localeCompare(b);
   });
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
-    if (playerListRef.current) {
-      playerListRef.current.scrollTop = 0;
-    }
+    if (playerListRef.current) playerListRef.current.scrollTop = 0;
   };
 
   const handleStartDraft = () => {
     setDraftStarted(true);
-    // Ensure players are sorted by ADP when draft starts
-    setPlayers(prevPlayers => [...prevPlayers].sort((a, b) => a.adp - b.adp));
-    // Expand all player tiers by default when draft starts
-    const initialExpandedTiersState = sortedTiers.reduce((acc, tier) => {
-        acc[tier] = true;
-        return acc;
-    }, {});
-    setExpandedTiers(initialExpandedTiersState);
+    // Sort by ADP and expand ALL tiers (based on full list, not current search)
+    setPlayers(prev => {
+      const sorted = [...prev].sort((a, b) => a.adp - b.adp);
+      const allTierNames = [...new Set(sorted.map(p => p.tier || 'Uncategorized'))];
+      setExpandedTiers(Object.fromEntries(allTierNames.map(t => [t, true])));
+      return sorted;
+    });
   };
 
   const handleDraftPlayer = (player, team) => {
@@ -456,32 +267,27 @@ const App = () => {
     }
 
     const currentRoster = team.rosterSlots;
-    let slotFound = false;
     let draftedSlotType = '';
 
     // Try to fill primary position slot
     if (currentRoster[player.position] && currentRoster[player.position].current < currentRoster[player.position].max) {
-      slotFound = true;
       draftedSlotType = player.position;
     }
     // Try to fill FLEX slot for RB/WR/TE
     else if (['RB', 'WR', 'TE'].includes(player.position) && currentRoster.FLEX.current < currentRoster.FLEX.max) {
-      slotFound = true;
       draftedSlotType = 'FLEX';
     }
     // Try to fill Bench slot
     else if (currentRoster.Bench.current < currentRoster.Bench.max) {
-      slotFound = true;
       draftedSlotType = 'Bench';
-    }
-
-    if (slotFound) {
-      setPlayerToDraft({ ...player, draftedSlotType }); // Store the slot type for undo
-      setTeamToDraftTo(team);
-      setShowConfirmation(true);
     } else {
       showTemporaryMessage(`${team.name} has no available ${player.position}, FLEX, or Bench slots for ${player.name}.`);
+      return;
     }
+
+    setPlayerToDraft({ ...player, draftedSlotType }); // Store slot type for undo
+    setTeamToDraftTo(team);
+    setShowConfirmation(true);
   };
 
   const confirmDraft = () => {
@@ -504,7 +310,6 @@ const App = () => {
       prevTeams.map(t => {
         if (t.id === teamToDraftTo.id) {
           const updatedRosterSlots = { ...t.rosterSlots };
-          // Increment the count for the slot type where the player was drafted
           if (updatedRosterSlots[draftedPlayerWithPick.draftedSlotType]) {
             updatedRosterSlots[draftedPlayerWithPick.draftedSlotType].current++;
           }
@@ -523,40 +328,43 @@ const App = () => {
   };
 
   const handleUndoLastPick = () => {
-    if (draftHistory.length === 0) return; // Nothing to undo
+    if (draftHistory.length === 0) return;
 
     const lastPick = draftHistory[draftHistory.length - 1];
     const { player: lastDraftedPlayer, team: draftingTeam } = lastPick;
 
-    // 1. Mark player as undrafted
     setPlayers(prevPlayers =>
       prevPlayers.map(p =>
-        p.id === lastDraftedPlayer.id ? { ...p, isDrafted: false, draftedBy: undefined, draftedPickNumber: undefined, draftedSlotType: undefined } : p
+        p.id === lastDraftedPlayer.id ? {
+          ...p,
+          isDrafted: false,
+          draftedBy: undefined,
+          draftedPickNumber: undefined,
+          draftedSlotType: undefined
+        } : p
       )
     );
 
-    // 2. Remove player from team's roster and decrement slot count
     setTeams(prevTeams =>
       prevTeams.map(t => {
         if (t.id === draftingTeam.id) {
           const updatedRosterSlots = { ...t.rosterSlots };
-          // Decrement the count for the slot type where the player was originally drafted
           if (updatedRosterSlots[lastDraftedPlayer.draftedSlotType]) {
             updatedRosterSlots[lastDraftedPlayer.draftedSlotType].current--;
           }
-          return { ...t, roster: t.roster.filter(p => p.id !== lastDraftedPlayer.id), rosterSlots: updatedRosterSlots };
+          return {
+            ...t,
+            roster: t.roster.filter(p => p.id !== lastDraftedPlayer.id),
+            rosterSlots: updatedRosterSlots
+          };
         }
         return t;
       })
     );
 
-    // 3. Decrement current pick index
     setCurrentPickIndex(prevIndex => Math.max(0, prevIndex - 1));
-
-    // 4. Remove last pick from history
-    setDraftHistory(prevHistory => prevHistory.slice(0, prevHistory.length - 1));
+    setDraftHistory(prevHistory => prevHistory.slice(0, -1));
   };
-
 
   const cancelDraftConfirmation = () => {
     setShowConfirmation(false);
@@ -579,7 +387,7 @@ const App = () => {
   };
 
   const DraftConfirmationModal = ({ player, team, onConfirm, onCancel }) => {
-    if (!player || !team) return null; // Ensure player and team are available
+    if (!player || !team) return null;
 
     return (
       <div className="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4 z-50">
@@ -589,7 +397,7 @@ const App = () => {
             Are you sure you want to draft <span className="font-semibold text-blue-600">{player.name}</span>
             <span className="text-gray-500"> ({player.position} - {player.team})</span> to <span className="font-semibold text-green-600">{team.name}</span>?
             <br />
-            <span className="text-sm text-gray-500">This player will be placed in the **{player.draftedSlotType}** slot.</span>
+            <span className="text-sm text-gray-500">This player will be placed in the <b>{player.draftedSlotType}</b> slot.</span>
           </p>
           <div className="flex justify-end space-x-3">
             <button
@@ -610,7 +418,6 @@ const App = () => {
     );
   };
 
-
   return (
     <div className="min-h-screen bg-gray-100 font-inter text-gray-900 p-4 sm:p-6 lg:p-8 flex flex-col items-center">
       <h1 className="text-4xl font-extrabold text-blue-700 mb-8 mt-4 sm:mt-8 text-center drop-shadow-md">
@@ -624,7 +431,7 @@ const App = () => {
           </p>
           <button
             onClick={handleStartDraft}
-            disabled={isLoadingPlayers} // Disable button while loading
+            disabled={isLoadingPlayers}
             className={`px-8 py-3 rounded-xl text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition duration-300 ease-in-out
               ${isLoadingPlayers
                 ? 'bg-gray-400 cursor-not-allowed'
@@ -791,28 +598,27 @@ const App = () => {
                   </p>
                   <ul className="list-disc list-inside text-gray-700 space-y-2">
                     <li>
-                      <span className="font-semibold">Dynamic Tier Generation:</span> An AI model could analyze real-time player data (performance, injuries, news), consensus rankings, and your league's specific scoring settings (e.g., PPR, Half-PPR) to generate highly customized and up-to-date tiers. This goes beyond static tiers by adapting to changing circumstances.
+                      <span className="font-semibold">Dynamic Tier Generation:</span> An AI model could analyze real-time player data (performance, injuries, news), consensus rankings, and your league's specific scoring settings (e.g., PPR, Half-PPR) to generate highly customized and up-to-date tiers.
                     </li>
                     <li>
-                      <span className="font-semibold">Tier Drop-off Alerts:</span> The AI could proactively alert you when there's a significant "drop-off" in talent within a position (i.e., the last few players in a tier are about to be drafted). This helps you decide whether to grab a player now or risk losing out on a valuable tier.
+                      <span className="font-semibold">Tier Drop-off Alerts:</span> Proactively alert when a position’s tier is about to empty.
                     </li>
                     <li>
-                      <span className="font-semibold">Value Picks & Recommendations:</span> Based on your team's current roster and needs, and considering the remaining players in each tier, the AI could recommend the "best available" player or suggest a player who offers the most value at your current pick.
+                      <span className="font-semibold">Value Picks & Recommendations:</span> Suggest best available picks based on roster needs + remaining tiers.
                     </li>
                     <li>
-                      <span className="font-semibold">Positional Scarcity Analysis:</span> AI could analyze the depth of talent remaining in each position's tiers across the entire draft board, helping you decide if you need to prioritize a scarce position (like top-tier running backs) or if you can afford to wait on a deeper position (like wide receivers).
+                      <span className="font-semibold">Positional Scarcity Analysis:</span> Measure depth left at each position across the board.
                     </li>
                     <li>
-                      <span className="font-semibold">Opponent Analysis:</span> In more advanced scenarios, AI could analyze your opponents' drafted rosters and suggest players who might counter their strengths or fill gaps that align with a "best player available" or "team need" strategy.
+                      <span className="font-semibold">Opponent Analysis:</span> Predict opponents’ picks based on their rosters.
                     </li>
                   </ul>
                   <p className="text-sm text-gray-500 mt-4">
-                    *Note: Implementing these advanced AI capabilities would typically require a backend server to process large datasets and integrate with LLMs or other machine learning models, as direct client-side fetching from external sites is limited by browser security policies (CORS).
+                    *Implementing these advanced capabilities typically requires a small backend for data + model calls.
                   </p>
                 </div>
               )}
             </div>
-
 
             {/* Drafted Players / Draft Board Overview */}
             <div className="bg-white p-6 rounded-lg shadow-lg flex-grow">
@@ -904,9 +710,9 @@ const App = () => {
 
       {/* Team Rosters Section (below the main draft board for better flow on smaller screens) */}
       {draftStarted && (
-        <div className="w-full mt-8">
+        <div className="w-full max-w-7xl bg-white p-6 rounded-lg shadow-lg mt-8">
           <button
-            className="w-full text-left py-2 px-3 bg-white rounded-lg shadow-lg flex justify-between items-center text-gray-800 font-semibold hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 transition duration-200 ease-in-out mb-4"
+            className="w-full text-left py-2 px-3 bg-gray-100 rounded-lg flex justify-between items-center text-gray-800 font-semibold hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 transition duration-200 ease-in-out mb-4"
             onClick={() => toggleSection('teamRosters')}
           >
             Team Rosters
