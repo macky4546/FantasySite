@@ -448,7 +448,6 @@ const App = () => {
 
   const sortedPositions = ['QB', 'RB', 'WR', 'TE', 'K', 'DST', 'DP'].filter(pos => playersByPositionAndTier[pos]);
 
-
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
     if (playerListRef.current) {
@@ -696,8 +695,8 @@ const App = () => {
                       {expandedTiers[tierName] && (
                         <ul className="divide-y divide-gray-100 border border-gray-200 rounded-b-lg mt-1">
                           {playersByTier[tierName].map(player => (
-                            <li key={player.id} className="py-3 px-3 flex items-center justify-between">
-                              <div>
+                            <li key={player.id} className="py-3 px-3 flex flex-col sm:flex-row sm:justify-between sm:items-center">
+                              <div className="flex-grow mb-2 sm:mb-0">
                                 <span className="font-semibold text-lg text-gray-800">{player.name}</span>
                                 <span className="ml-2 text-sm text-gray-500">
                                   ({player.position} - {player.team}) ADP: {player.adp}
