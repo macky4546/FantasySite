@@ -336,13 +336,14 @@ const App = () => {
   const [teamToDraftTo, setTeamToDraftTo] = useState(null);
   const [isLoadingPlayers, setIsLoadingPlayers] = useState(true);
   const [draftHistory, setDraftHistory] = useState([]);
-  const [expandedTiers, setExpandedTiers] = useState({}); // State to manage collapsible player tiers
+  const [expandedTiers, setExpandedTiers] = useState({}); // State to manage collapsible player tiers in the default view
   const [expandedSections, setExpandedSections] = useState({ // State to manage collapsible main sections
     draftStatus: true,
     aiInsights: true,
     draftedPlayers: true,
     teamRosters: true,
   });
+  const [currentView, setCurrentView] = useState('tieredPlayers'); // 'tieredPlayers' or 'topPicksByPosition'
   const [message, setMessage] = useState(''); // New state for messages (e.g., roster full)
   const messageTimeoutRef = useRef(null); // Ref for message timeout
 
@@ -429,6 +430,24 @@ const App = () => {
     }
     return a.localeCompare(b); // Fallback for other tier names
   });
+
+  // Group available players by position and then by tier within each position
+  const playersByPositionAndTier = availablePlayers.reduce((acc, player) => {
+    const position = player.position;
+    const tierName = player.tier || 'Uncategorized';
+
+    if (!acc[position]) {
+      acc[position] = {};
+    }
+    if (!acc[position][tierName]) {
+      acc[position][tierName] = [];
+    }
+    acc[position][tierName].push(player);
+    return acc;
+  }, {});
+
+  const sortedPositions = ['QB', 'RB', 'WR', 'TE', 'K', 'DST', 'DP'].filter(pos => playersByPositionAndTier[pos]);
+
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
