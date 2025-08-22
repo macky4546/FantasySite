@@ -410,7 +410,7 @@ const App = () => {
     player.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Group available players by tier and then sort players within each tier by position
+  // Group available players by tier
   const playersByTier = availablePlayers.reduce((acc, player) => {
     const tierName = player.tier || 'Uncategorized'; // Default tier if not specified
     if (!acc[tierName]) {
@@ -904,9 +904,9 @@ const App = () => {
 
       {/* Team Rosters Section (below the main draft board for better flow on smaller screens) */}
       {draftStarted && (
-        <div className="w-full max-w-7xl bg-white p-6 rounded-lg shadow-lg mt-8">
+        <div className="w-full mt-8">
           <button
-            className="w-full text-left py-2 px-3 bg-gray-100 rounded-lg flex justify-between items-center text-gray-800 font-semibold hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 transition duration-200 ease-in-out mb-4"
+            className="w-full text-left py-2 px-3 bg-white rounded-lg shadow-lg flex justify-between items-center text-gray-800 font-semibold hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-300 transition duration-200 ease-in-out mb-4"
             onClick={() => toggleSection('teamRosters')}
           >
             Team Rosters
