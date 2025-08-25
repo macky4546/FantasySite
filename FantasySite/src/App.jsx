@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 // Assuming Tailwind CSS is configured and available globally for styling
 
-// Team list
+// Team list (unchanged from the base version)
 const initialTeams = [
   {
     id: 1, name: 'Jeremy', owner: 'Jeremy', roster: [],
@@ -147,6 +147,7 @@ const App = () => {
     const fetchLiveData = async () => {
       try {
         setIsLoadingPlayers(true);
+        // This is the fetch call to your Google Apps Script web app
         const apiUrl = 'https://script.google.com/macros/s/AKfycbw2H7AmZjtPmG4EkkzOEu5lrzcHnDRGC6Bwwyw4tmwMWBTbsJIQ9tPU06NX27PNp2in/exec';
         
         const response = await fetch(apiUrl);
@@ -155,22 +156,21 @@ const App = () => {
         }
         const data = await response.json();
         
-        // Assuming the data from the Google Apps Script is an array of objects
-        // and we need to normalize it to our app's player structure
+        // This is the core fix: normalizing the data to match your app's structure
         const normalizedData = data.map((player, index) => ({
           id: index + 1,
-          name: player['Player Name'] || player.name || 'N/A',
+          name: player['Player.Name'] || player.name || 'N/A', // Use Player.Name from your sheet
           position: player.Position || player.position || 'N/A',
           team: player.Team || player.team || 'N/A',
-          adp: parseFloat(player['Avg.Rank']) || parseFloat(player.adp) || 999,
-          tier: `Tier ${player.Tier || player.tier}`
+          adp: parseFloat(player['Avg.Rank']) || parseFloat(player.adp) || 999, // Use Avg.Rank
+          tier: `Tier ${player.Tier}` || 'Uncategorized'
         }));
         
         setPlayers(normalizedData);
       } catch (error) {
         console.error('Error fetching player data:', error);
-        setPlayers([]);
-        setMessage('Failed to load live player data. Please check the Google Apps Script URL or its settings.');
+        setPlayers([]); // Fallback to an empty list on error
+        setMessage('Failed to load live player data. Please check the Google Apps Script URL and its settings.');
       } finally {
         setIsLoadingPlayers(false);
       }
@@ -408,7 +408,6 @@ const App = () => {
     );
   };
 
-
   return (
     <div className="min-h-screen bg-gray-100 font-inter text-gray-900 p-4 sm:p-6 lg:p-8 flex flex-col items-center">
       <h1 className="text-4xl font-extrabold text-blue-700 mb-8 mt-4 sm:mt-8 text-center drop-shadow-md">
@@ -452,7 +451,7 @@ const App = () => {
                 </div>
               ) : players.length === 0 ? (
                 <p className="text-gray-500 text-center py-8">
-                  No available players. Please check if the backend API is running and returning data.
+                  No available players. Please check if the Google Apps Script URL is correct.
                 </p>
               ) : availablePlayers.length > 0 ? (
                 <div>
