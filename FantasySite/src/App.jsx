@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 // Assuming Tailwind CSS is configured and available globally for styling
 
+// Team list (unchanged from the base version)
 const initialTeams = [
   {
     id: 1, name: 'Jeremy', owner: 'Jeremy', roster: [],
@@ -118,6 +119,209 @@ const initialTeams = [
   },
 ];
 
+const mockPlayersData = [
+  { id: 1, name: 'Ja\'Marr Chase', position: 'WR', team: 'CIN', adp: 1.41, tier: 'Tier 1' },
+  { id: 2, name: 'Bijan Robinson', position: 'RB', team: 'ATL', adp: 2.19, tier: 'Tier 1' },
+  { id: 3, name: 'Saquon Barkley', position: 'RB', team: 'PHI', adp: 4.49, tier: 'Tier 1' },
+  { id: 4, name: 'Justin Jefferson', position: 'WR', team: 'MIN', adp: 4.63, tier: 'Tier 1' },
+  { id: 5, name: 'Jahmyr Gibbs', position: 'RB', team: 'DET', adp: 5.17, tier: 'Tier 1' },
+  { id: 6, name: 'CeeDee Lamb', position: 'WR', team: 'DAL', adp: 5.36, tier: 'Tier 1' },
+  { id: 7, name: 'Puka Nacua', position: 'WR', team: 'LAR', adp: 8.71, tier: 'Tier 2' },
+  { id: 8, name: 'Malik Nabers', position: 'WR', team: 'NYG', adp: 9.21, tier: 'Tier 2' },
+  { id: 9, name: 'Nico Collins', position: 'WR', team: 'HOU', adp: 10.63, tier: 'Tier 2' },
+  { id: 10, name: 'Amon-Ra St. Brown', position: 'WR', team: 'DET', adp: 11.33, tier: 'Tier 2' },
+  { id: 11, name: 'Brian Thomas Jr.', position: 'WR', team: 'JAX', adp: 11.96, tier: 'Tier 2' },
+  { id: 12, name: 'Christian McCaffrey', position: 'RB', team: 'SF', adp: 12.07, tier: 'Tier 2' },
+  { id: 13, name: 'Ashton Jeanty', position: 'RB', team: 'N/A', adp: 12.29, tier: 'Tier 2' },
+  { id: 14, name: 'Derrick Henry', position: 'RB', team: 'BAL', adp: 12.8, tier: 'Tier 2' },
+  { id: 15, name: 'De\'Von Achane', position: 'RB', team: 'MIA', adp: 14.04, tier: 'Tier 2' },
+  { id: 16, name: 'Drake London', position: 'WR', team: 'ATL', adp: 17.27, tier: 'Tier 3' },
+  { id: 17, name: 'Brock Bowers', position: 'TE', team: 'LV', adp: 18.84, tier: 'Tier 3' },
+  { id: 18, name: 'A.J. Brown', position: 'WR', team: 'PHI', adp: 19.19, tier: 'Tier 3' },
+  { id: 19, name: 'Jonathan Taylor', position: 'RB', team: 'IND', adp: 20.61, tier: 'Tier 3' },
+  { id: 20, name: 'Josh Jacobs', position: 'RB', team: 'GB', adp: 20.79, tier: 'Tier 3' },
+  { id: 21, name: 'Bucky Irving', position: 'RB', team: 'TB', adp: 22.5, tier: 'Tier 3' },
+  { id: 22, name: 'Ladd McConkey', position: 'WR', team: 'LAC', adp: 22.59, tier: 'Tier 3' },
+  { id: 23, name: 'Trey McBride', position: 'TE', team: 'ARI', adp: 24.36, tier: 'Tier 4' },
+  { id: 24, name: 'Chase Brown', position: 'RB', team: 'CIN', adp: 25.17, tier: 'Tier 4' },
+  { id: 25, name: 'Josh Allen', position: 'QB', team: 'BUF', adp: 26.5, tier: 'Tier 4' },
+  { id: 26, name: 'Lamar Jackson', position: 'QB', team: 'BAL', adp: 27.14, tier: 'Tier 5' },
+  { id: 27, name: 'Kyren Williams', position: 'RB', team: 'LAR', adp: 27.53, tier: 'Tier 5' },
+  { id: 28, name: 'Tee Higgins', position: 'WR', team: 'CIN', adp: 29.96, tier: 'Tier 5' },
+  { id: 29, name: 'Jaxon Smith-Njigba', position: 'WR', team: 'SEA', adp: 30.03, tier: 'Tier 5' },
+  { id: 30, name: 'Tyreek Hill', position: 'WR', team: 'MIA', adp: 30.07, tier: 'Tier 5' },
+  { id: 31, name: 'Garrett Wilson', position: 'WR', team: 'NYJ', adp: 32.97, tier: 'Tier 6' },
+  { id: 32, name: 'George Kittle', position: 'TE', team: 'SF', adp: 34.07, tier: 'Tier 6' },
+  { id: 33, name: 'Jayden Daniels', position: 'QB', team: 'WAS', adp: 34.11, tier: 'Tier 6' },
+  { id: 34, name: 'Davante Adams', position: 'WR', team: 'LV', adp: 34.56, tier: 'Tier 6' },
+  { id: 35, name: 'Mike Evans', position: 'WR', team: 'TB', adp: 36.06, tier: 'Tier 6' },
+  { id: 36, name: 'Breece Hall', position: 'RB', team: 'NYJ', adp: 36.3, tier: 'Tier 6' },
+  { id: 37, name: 'Jalen Hurts', position: 'QB', team: 'PHI', adp: 36.87, tier: 'Tier 6' },
+  { id: 38, name: 'James Cook', position: 'RB', team: 'BUF', adp: 38.13, tier: 'Tier 6' },
+  { id: 39, name: 'Kenneth Walker III', position: 'RB', team: 'SEA', adp: 39.96, tier: 'Tier 7' },
+  { id: 40, name: 'Terry McLaurin', position: 'WR', team: 'WAS', adp: 40.21, tier: 'Tier 7' },
+  { id: 41, name: 'Marvin Harrison Jr.', position: 'WR', team: 'ARI', adp: 41.43, tier: 'Tier 7' },
+  { id: 42, name: 'Alvin Kamara', position: 'RB', team: 'NO', adp: 41.46, tier: 'Tier 7' },
+  { id: 43, name: 'DJ Moore', position: 'WR', team: 'CHI', adp: 44.06, tier: 'Tier 7' },
+  { id: 44, name: 'Omarion Hampton', position: 'RB', team: 'N/A', adp: 44.5, tier: 'Tier 7' },
+  { id: 45, name: 'Joe Burrow', position: 'QB', team: 'CIN', adp: 46.89, tier: 'Tier 8' },
+  { id: 46, name: 'DK Metcalf', position: 'WR', team: 'SEA', adp: 47.61, tier: 'Tier 8' },
+  { id: 47, name: 'Chuba Hubbard', position: 'RB', team: 'CAR', adp: 47.83, tier: 'Tier 8' },
+  { id: 48, name: 'James Conner', position: 'RB', team: 'ARI', adp: 49.11, tier: 'Tier 8' },
+  { id: 49, name: 'Courtland Sutton', position: 'WR', team: 'DEN', adp: 50.79, tier: 'Tier 8' },
+  { id: 50, name: 'DeVonta Smith', position: 'WR', team: 'PHI', adp: 52.93, tier: 'Tier 8' },
+  { id: 51, name: 'Zay Flowers', position: 'WR', team: 'BAL', adp: 55, tier: 'Tier 9' },
+  { id: 52, name: 'Jameson Williams', position: 'WR', team: 'DET', adp: 55.86, tier: 'Tier 9' },
+  { id: 53, name: 'David Montgomery', position: 'RB', team: 'DET', adp: 58.01, tier: 'Tier 9' },
+  { id: 54, name: 'Xavier Worthy', position: 'WR', team: 'KC', adp: 58.14, tier: 'Tier 9' },
+  { id: 55, name: 'Rashee Rice', position: 'WR', team: 'KC', adp: 59.13, tier: 'Tier 9' },
+  { id: 56, name: 'D\'Andre Swift', position: 'RB', team: 'CHI', adp: 59.87, tier: 'Tier 9' },
+  { id: 57, name: 'Jaylen Waddle', position: 'WR', team: 'MIA', adp: 61, tier: 'Tier 10' },
+  { id: 58, name: 'Sam LaPorta', position: 'TE', team: 'DET', adp: 61.59, tier: 'Tier 10' },
+  { id: 59, name: 'Tetairoa McMillan', position: 'WR', team: 'N/A', adp: 62.34, tier: 'Tier 10' },
+  { id: 60, name: 'Calvin Ridley', position: 'WR', team: 'TEN', adp: 64.31, tier: 'Tier 10' },
+  { id: 61, name: 'Aaron Jones Sr.', position: 'RB', team: 'MIN', adp: 65.1, tier: 'Tier 10' },
+  { id: 62, name: 'George Pickens', position: 'WR', team: 'PIT', adp: 65.24, tier: 'Tier 10' },
+  { id: 63, name: 'TreVeyon Henderson', position: 'RB', team: 'N/A', adp: 65.86, tier: 'Tier 10' },
+  { id: 64, name: 'Patrick Mahomes II', position: 'QB', team: 'KC', adp: 65.96, tier: 'Tier 10' },
+  { id: 65, name: 'Tony Pollard', position: 'RB', team: 'TEN', adp: 67.79, tier: 'Tier 11' },
+  { id: 66, name: 'RJ Harvey', position: 'RB', team: 'N/A', adp: 68.64, tier: 'Tier 11' },
+  { id: 67, name: 'Joe Mixon', position: 'RB', team: 'HOU', adp: 69.99, tier: 'Tier 11' },
+  { id: 68, name: 'Isiah Pacheco', position: 'RB', team: 'KC', adp: 70.09, tier: 'Tier 11' },
+  { id: 69, name: 'Chris Olave', position: 'WR', team: 'NO', adp: 70.41, tier: 'Tier 11' },
+  { id: 70, name: 'Baker Mayfield', position: 'QB', team: 'TB', adp: 70.77, tier: 'Tier 11' },
+  { id: 71, name: 'T.J. Hockenson', position: 'TE', team: 'MIN', adp: 72.43, tier: 'Tier 11' },
+  { id: 72, name: 'Kaleb Johnson', position: 'RB', team: 'N/A', adp: 73.89, tier: 'Tier 11' },
+  { id: 73, name: 'Travis Hunter', position: 'WR', team: 'N/A', adp: 74.59, tier: 'Tier 11' },
+  { id: 74, name: 'Jerry Jeudy', position: 'WR', team: 'CLE', adp: 76, tier: 'Tier 12' },
+  { id: 75, name: 'Brian Robinson Jr.', position: 'RB', team: 'WAS', adp: 77.64, tier: 'Tier 12' },
+  { id: 76, name: 'Bo Nix', position: 'QB', team: 'DEN', adp: 78.01, tier: 'Tier 12' },
+  { id: 77, name: 'Rome Odunze', position: 'WR', team: 'CHI', adp: 79.69, tier: 'Tier 12' },
+  { id: 78, name: 'Kyler Murray', position: 'QB', team: 'ARI', adp: 80.7, tier: 'Tier 12' },
+  { id: 79, name: 'Mark Andrews', position: 'TE', team: 'BAL', adp: 81.64, tier: 'Tier 12' },
+  { id: 80, name: 'Travis Kelce', position: 'TE', team: 'KC', adp: 82.89, tier: 'Tier 12' },
+  { id: 81, name: 'Jordan Addison', position: 'WR', team: 'MIN', adp: 85.9, tier: 'Tier 13' },
+  { id: 82, name: 'Jakobi Meyers', position: 'WR', team: 'LV', adp: 86.59, tier: 'Tier 13' },
+  { id: 83, name: 'Chris Godwin', position: 'WR', team: 'TB', adp: 87.07, tier: 'Tier 13' },
+  { id: 84, name: 'Jaylen Warren', position: 'RB', team: 'PIT', adp: 89.2, tier: 'Tier 13' },
+  { id: 85, name: 'David Njoku', position: 'TE', team: 'CLE', adp: 89.76, tier: 'Tier 13' },
+  { id: 86, name: 'Justin Fields', position: 'QB', team: 'PIT', adp: 90.06, tier: 'Tier 13' },
+  { id: 87, name: 'Evan Engram', position: 'TE', team: 'JAX', adp: 90.96, tier: 'Tier 13' },
+  { id: 88, name: 'Jauan Jennings', position: 'WR', team: 'SF', adp: 91.29, tier: 'Tier 13' },
+  { id: 89, name: 'Tyrone Tracy Jr.', position: 'RB', team: 'NYG', adp: 91.47, tier: 'Tier 13' },
+  { id: 90, name: 'Brock Purdy', position: 'QB', team: 'SF', adp: 91.6, tier: 'Tier 13' },
+  { id: 91, name: 'Stefon Diggs', position: 'WR', team: 'HOU', adp: 92.24, tier: 'Tier 13' },
+  { id: 92, name: 'Dak Prescott', position: 'QB', team: 'DAL', adp: 93.47, tier: 'Tier 13' },
+  { id: 93, name: 'Khalil Shakir', position: 'WR', team: 'BUF', adp: 95.43, tier: 'Tier 14' },
+  { id: 94, name: 'Travis Etienne Jr.', position: 'RB', team: 'JAX', adp: 95.74, tier: 'Tier 14' },
+  { id: 95, name: 'Jayden Reed', position: 'WR', team: 'GB', adp: 95.8, tier: 'Tier 14' },
+  { id: 96, name: 'Justin Herbert', position: 'QB', team: 'LAC', adp: 97.13, tier: 'Tier 14' },
+  { id: 97, name: 'Caleb Williams', position: 'QB', team: 'CHI', adp: 97.76, tier: 'Tier 14' },
+  { id: 98, name: 'Deebo Samuel Sr.', position: 'WR', team: 'SF', adp: 98.5, tier: 'Tier 14' },
+  { id: 99, name: 'Ricky Pearsall', position: 'WR', team: 'SF', adp: 99.73, tier: 'Tier 14' },
+  { id: 100, name: 'Tucker Kraft', position: 'TE', team: 'GB', adp: 100.26, tier: 'Tier 14' },
+  { id: 101, name: 'Josh Downs', position: 'WR', team: 'IND', adp: 102.53, tier: 'Tier 15' },
+  { id: 102, name: 'Jared Goff', position: 'QB', team: 'DET', adp: 103.59, tier: 'Tier 15' },
+  { id: 103, name: 'Javonte Williams', position: 'RB', team: 'DEN', adp: 104.67, tier: 'Tier 15' },
+  { id: 104, name: 'Jordan Mason', position: 'RB', team: 'SF', adp: 105.24, tier: 'Tier 15' },
+  { id: 105, name: 'Drake Maye', position: 'QB', team: 'NE', adp: 107.39, tier: 'Tier 16' },
+  { id: 106, name: 'Jordan Love', position: 'QB', team: 'GB', adp: 108.17, tier: 'Tier 16' },
+  { id: 107, name: 'Rhamondre Stevenson', position: 'RB', team: 'NE', adp: 108.31, tier: 'Tier 16' },
+  { id: 108, name: 'Cam Skattebo', position: 'RB', team: 'N/A', adp: 109.36, tier: 'Tier 16' },
+  { id: 109, name: 'Zach Charbonnet', position: 'RB', team: 'SEA', adp: 110.61, tier: 'Tier 16' },
+  { id: 110, name: 'Najee Harris', position: 'RB', team: 'PIT', adp: 111.17, tier: 'Tier 16' },
+  { id: 111, name: 'Cooper Kupp', position: 'WR', team: 'LAR', adp: 112.09, tier: 'Tier 16' },
+  { id: 112, name: 'Quinshon Judkins', position: 'RB', team: 'N/A', adp: 112.66, tier: 'Tier 16' },
+  { id: 113, name: 'Michael Pittman Jr.', position: 'WR', team: 'IND', adp: 113.41, tier: 'Tier 16' },
+  { id: 114, name: 'Tyjae Spears', position: 'RB', team: 'TEN', adp: 114.29, tier: 'Tier 16' },
+  { id: 115, name: 'Trevor Lawrence', position: 'QB', team: 'JAX', adp: 116.6, tier: 'Tier 17' },
+  { id: 116, name: 'Tank Bigsby', position: 'RB', team: 'JAX', adp: 117.77, tier: 'Tier 17' },
+  { id: 117, name: 'Jake Ferguson', position: 'TE', team: 'DAL', adp: 117.91, tier: 'Tier 17' },
+  { id: 118, name: 'Dalton Kincaid', position: 'TE', team: 'BUF', adp: 118.73, tier: 'Tier 17' },
+  { id: 119, name: 'Darnell Mooney', position: 'WR', team: 'ATL', adp: 119.84, tier: 'Tier 17' },
+  { id: 120, name: 'Rachaad White', position: 'RB', team: 'TB', adp: 120.11, tier: 'Tier 17' },
+  { id: 121, name: 'Emeka Egbuka', position: 'WR', team: 'N/A', adp: 120.4, tier: 'Tier 17' },
+  { id: 122, name: 'C.J. Stroud', position: 'QB', team: 'HOU', adp: 121.47, tier: 'Tier 17' },
+  { id: 123, name: 'Tyler Warren', position: 'TE', team: 'N/A', adp: 122.19, tier: 'Tier 17' },
+  { id: 124, name: 'Dallas Goedert', position: 'TE', team: 'PHI', adp: 124.96, tier: 'Tier 17' },
+  { id: 125, name: 'Brandon Aiyuk', position: 'WR', team: 'SF', adp: 126.79, tier: 'Tier 18' },
+  { id: 126, name: 'J.K. Dobbins', position: 'RB', team: 'LAC', adp: 121.1, tier: 'Tier 17' },
+  { id: 127, name: 'J.J. McCarthy', position: 'QB', team: 'MIN', adp: 127.33, tier: 'Tier 18' },
+  { id: 128, name: 'Rashid Shaheed', position: 'WR', team: 'NO', adp: 133.17, tier: 'Tier 18' },
+  { id: 129, name: 'Matthew Golden', position: 'WR', team: 'N/A', adp: 121.93, tier: 'Tier 17' },
+  { id: 130, name: 'Keon Coleman', position: 'WR', team: 'BUF', adp: 134.03, tier: 'Tier 18' },
+  { id: 131, name: 'Austin Ekeler', position: 'RB', team: 'WAS', adp: 135.84, tier: 'Tier 19' },
+  { id: 132, name: 'Colston Loveland', position: 'TE', team: 'N/A', adp: 138.13, tier: 'Tier 19' },
+  { id: 133, name: 'Ray Davis', position: 'RB', team: 'BUF', adp: 136.26, tier: 'Tier 19' },
+  { id: 134, name: 'Christian Kirk', position: 'WR', team: 'JAX', adp: 142.34, tier: 'Tier 20' },
+  { id: 135, name: 'Tua Tagovailoa', position: 'QB', team: 'MIA', adp: 140.12, tier: 'Tier 19' },
+  { id: 136, name: 'Rashod Bateman', position: 'WR', team: 'BAL', adp: 146.29, tier: 'Tier 20' },
+  { id: 137, name: 'Jerome Ford', position: 'RB', team: 'CLE', adp: 146.64, tier: 'Tier 20' },
+  { id: 138, name: 'Kyle Pitts Sr.', position: 'TE', team: 'ATL', adp: 148.66, tier: 'Tier 20' },
+  { id: 139, name: 'Tyler Allgeier', position: 'RB', team: 'ATL', adp: 145.16, tier: 'Tier 20' },
+  { id: 140, name: 'Matthew Stafford', position: 'QB', team: 'LAR', adp: 145.28, tier: 'Tier 20' },
+  { id: 141, name: 'Isaac Guerendo', position: 'RB', team: 'SF', adp: 147.13, tier: 'Tier 20' },
+  { id: 142, name: 'Jonnu Smith', position: 'TE', team: 'MIA', adp: 147.51, tier: 'Tier 20' },
+  { id: 143, name: 'Trey Benson', position: 'RB', team: 'ARI', adp: 142.5, tier: 'Tier 20' },
+  { id: 144, name: 'Luther Burden III', position: 'WR', team: 'N/A', adp: 148.42, tier: 'Tier 20' },
+  { id: 145, name: 'Cedric Tillman', position: 'WR', team: 'CLE', adp: 150.72, tier: 'Tier 20' },
+  { id: 146, name: 'Hunter Henry', position: 'TE', team: 'NE', adp: 150.91, tier: 'Tier 20' },
+  { id: 147, name: 'Michael Penix Jr.', position: 'QB', team: 'ATL', adp: 157.04, tier: 'Tier 21' },
+  { id: 148, name: 'Bryce Young', position: 'QB', team: 'CAR', adp: 152.07, tier: 'Tier 20' },
+  { id: 149, name: 'Braelon Allen', position: 'RB', team: 'NYJ', adp: 152.29, tier: 'Tier 20' },
+  { id: 150, name: 'Jaydon Blue', position: 'RB', team: 'N/A', adp: 158.42, tier: 'Tier 21' },
+  { id: 151, name: 'Marvin Mims Jr.', position: 'WR', team: 'DEN', adp: 155.58, tier: 'Tier 21' },
+  { id: 152, name: 'Rico Dowdle', position: 'RB', team: 'DAL', adp: 149.9, tier: 'Tier 20' },
+  { id: 153, name: 'Tre\' Harris', position: 'WR', team: 'N/A', adp: 155.99, tier: 'Tier 21' },
+  { id: 154, name: 'Marquise Brown', position: 'WR', team: 'KC', adp: 158.43, tier: 'Tier 21' },
+  { id: 155, name: 'Romeo Doubs', position: 'WR', team: 'GB', adp: 166.19, tier: 'Tier 22' },
+  { id: 156, name: 'Zach Ertz', position: 'TE', team: 'WAS', adp: 166.96, tier: 'Tier 22' },
+  { id: 157, name: 'Nick Chubb', position: 'RB', team: 'CLE', adp: 159.31, tier: 'Tier 21' },
+  { id: 158, name: 'Adam Thielen', position: 'WR', team: 'CAR', adp: 172.29, tier: 'Tier 23' },
+  { id: 159, name: 'Jaylen Wright', position: 'RB', team: 'MIA', adp: 156.28, tier: 'Tier 21' },
+  { id: 160, name: 'Jalen McMillan', position: 'WR', team: 'TB', adp: 173.16, tier: 'Tier 23' },
+  { id: 161, name: 'Kyle Williams', position: 'WR', team: 'N/A', adp: 174.44, tier: 'Tier 23' },
+  { id: 162, name: 'Geno Smith', position: 'QB', team: 'SEA', adp: 169.26, tier: 'Tier 22' },
+  { id: 163, name: 'Jayden Higgins', position: 'WR', team: 'N/A', adp: 158.15, tier: 'Tier 21' },
+  { id: 164, name: 'Bhayshul Tuten', position: 'RB', team: 'N/A', adp: 158.19, tier: 'Tier 21' },
+  { id: 165, name: 'Wan\'Dale Robinson', position: 'WR', team: 'NYG', adp: 172, tier: 'Tier 23' },
+  { id: 166, name: 'Quentin Johnston', position: 'WR', team: 'LAC', adp: 167.01, tier: 'Tier 22' },
+  { id: 167, name: 'Dylan Sampson', position: 'RB', team: 'N/A', adp: 163.09, tier: 'Tier 21' },
+  { id: 168, name: 'DeMario Douglas', position: 'WR', team: 'NE', adp: 183.86, tier: 'Tier 24' },
+  { id: 169, name: 'Roschon Johnson', position: 'RB', team: 'CHI', adp: 162.26, tier: 'Tier 21' },
+  { id: 170, name: 'Brenton Strange', position: 'TE', team: 'JAX', adp: 178.4, tier: 'Tier 23' },
+  { id: 171, name: 'Xavier Legette', position: 'WR', team: 'CAR', adp: 183.94, tier: 'Tier 24' },
+  { id: 172, name: 'Blake Corum', position: 'RB', team: 'LAR', adp: 180.85, tier: 'Tier 24' },
+  { id: 173, name: 'Isaiah Likely', position: 'TE', team: 'BAL', adp: 188.07, tier: 'Tier 24' },
+  { id: 174, name: 'Sam Darnold', position: 'QB', team: 'MIN', adp: 184.51, tier: 'Tier 24' },
+  { id: 175, name: 'Cameron Ward', position: 'QB', team: 'N/A', adp: 195.74, tier: 'Tier 25' },
+  { id: 176, name: 'Joshua Palmer', position: 'WR', team: 'LAC', adp: 188.13, tier: 'Tier 24' },
+  { id: 177, name: 'MarShawn Lloyd', position: 'RB', team: 'GB', adp: 185.03, tier: 'Tier 24' },
+  { id: 178, name: 'Denver Broncos', position: 'DST', team: 'DEN', adp: 156.24, tier: 'Tier 21' },
+  { id: 179, name: 'Philadelphia Eagles', position: 'DST', team: 'PHI', adp: 166.73, tier: 'Tier 22' },
+  { id: 180, name: 'DeAndre Hopkins', position: 'WR', team: 'TEN', adp: 192.45, tier: 'Tier 24' },
+  { id: 181, name: 'Pat Freiermuth', position: 'TE', team: 'PIT', adp: 197.79, tier: 'Tier 25' },
+  { id: 182, name: 'Pittsburgh Steelers', position: 'DST', team: 'PIT', adp: 170.76, tier: 'Tier 22' },
+  { id: 183, name: 'Minnesota Vikings', position: 'DST', team: 'MIN', adp: 177.35, tier: 'Tier 23' },
+  { id: 184, name: 'Mike Gesicki', position: 'TE', team: 'CIN', adp: 195.02, tier: 'Tier 25' },
+  { id: 185, name: 'Mason Taylor', position: 'TE', team: 'N/A', adp: 216.36, tier: 'Tier 26' },
+  { id: 186, name: 'Baltimore Ravens', position: 'DST', team: 'BAL', adp: 174.39, tier: 'Tier 23' },
+  { id: 187, name: 'Chig Okonkwo', position: 'TE', team: 'TEN', adp: 207.78, tier: 'Tier 26' },
+  { id: 188, name: 'Jack Bech', position: 'WR', team: 'N/A', adp: 198.48, tier: 'Tier 25' },
+  { id: 189, name: 'Alec Pierce', position: 'WR', team: 'IND', adp: 199.14, tier: 'Tier 25' },
+  { id: 190, name: 'Cade Otton', position: 'TE', team: 'TB', adp: 206.36, tier: 'Tier 26' },
+  { id: 191, name: 'Aaron Rodgers', position: 'QB', team: 'NYJ', adp: 209.3, tier: 'Tier 26' },
+  { id: 192, name: 'Houston Texans', position: 'DST', team: 'HOU', adp: 187.81, tier: 'Tier 24' },
+  { id: 193, name: 'Michael Wilson', position: 'WR', team: 'ARI', adp: 204.42, tier: 'Tier 25' },
+  { id: 194, name: 'Kareem Hunt', position: 'RB', team: 'N/A', adp: 201.58, tier: 'Tier 25' },
+  { id: 195, name: 'Kansas City Chiefs', position: 'DST', team: 'KC', adp: 190.65, tier: 'Tier 24' },
+  { id: 196, name: 'Dontayvion Wicks', position: 'WR', team: 'GB', adp: 217.6, tier: 'Tier 26' },
+  { id: 197, name: 'Detroit Lions', position: 'DST', team: 'DET', adp: 191.48, tier: 'Tier 24' },
+  { id: 198, name: 'Jalen Coker', position: 'WR', team: 'N/A', adp: 209.15, tier: 'Tier 26' },
+  { id: 199, name: 'Buffalo Bills', position: 'DST', team: 'BUF', adp: 188.61, tier: 'Tier 24' },
+  { id: 200, name: 'Brandon Aubrey', position: 'K', team: 'DAL', adp: 189.46, tier: 'Tier 24' },
+];
+
 const App = () => {
   const [players, setPlayers] = useState([]);
   const [teams, setTeams] = useState(initialTeams);
@@ -143,28 +347,40 @@ const App = () => {
   const playerListRef = useRef(null);
 
   useEffect(() => {
-    // This function will fetch live data from your Azure Function
-    const fetchPlayers = async () => {
+    // New function to fetch data from the Google Apps Script API
+    const fetchAndParseData = async () => {
       try {
         setIsLoadingPlayers(true);
-        // This is the crucial change. It calls your new Azure Function backend.
-        const response = await fetch('/api/FantasyTiersScraper');
+        const apiUrl = 'https://script.google.com/macros/s/AKfycbw2H7AmZjtPmG4EkkzOEu5lrzcHnDRGC6Bwwyw4tmwMWBTbsJIQ9tPU06NX27PNp2in/exec';
+        
+        const response = await fetch(apiUrl);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        setPlayers(data);
+        
+        // Data coming from the Apps Script is likely already in a structured format
+        // We will do a quick normalization to ensure it matches our state structure
+        const normalizedData = data.map((player, index) => ({
+          id: index + 1, // Using index for a unique ID
+          name: player['Player Name'] || player.name,
+          position: player.Position || player.position,
+          team: player.Team || player.team,
+          adp: parseFloat(player['Avg.Rank']) || parseFloat(player.adp) || 999,
+          tier: `Tier ${player.Tier || player.tier}`
+        }));
+        
+        setPlayers(normalizedData);
       } catch (error) {
         console.error('Error fetching player data:', error);
-        // Fallback to empty data or display a persistent error message
-        setPlayers([]);
-        setMessage('Failed to load live player data from backend. Check API status.');
+        setPlayers(mockPlayersData); // Use mock data as a fallback
+        setMessage('Failed to load live player data from API. Using mock data instead.');
       } finally {
         setIsLoadingPlayers(false);
       }
     };
 
-    fetchPlayers();
+    fetchAndParseData();
   }, []);
 
   useEffect(() => {
@@ -410,7 +626,7 @@ const App = () => {
           </p>
           <button
             onClick={handleStartDraft}
-            disabled={isLoadingPlayers} // Disable button while loading
+            disabled={isLoadingPlayers}
             className={`px-8 py-3 rounded-xl text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition duration-300 ease-in-out
               ${isLoadingPlayers
                 ? 'bg-gray-400 cursor-not-allowed'
@@ -438,6 +654,10 @@ const App = () => {
                 <div className="flex justify-center items-center h-full">
                   <p className="text-gray-500">Loading players data...</p>
                 </div>
+              ) : players.length === 0 ? (
+                <p className="text-gray-500 text-center py-8">
+                  No available players. Please check if the backend API is running and returning data.
+                </p>
               ) : availablePlayers.length > 0 ? (
                 <div>
                   {sortedTiers.map(tierName => (
