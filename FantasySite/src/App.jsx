@@ -1,7 +1,61 @@
 import React, { useState, useEffect, useRef } from 'react';
 // Assuming Tailwind CSS is configured and available globally for styling
 
-// Team list (unchanged from the base version)
+// Player Data from the uploaded CSV file (weekly-ALL (7).csv).
+// This data is now static within the app code.
+const mockPlayersData = [
+    { id: 1, name: 'JaMarr Chase', position: 'WR', team: 'N/A', adp: 2.05, tier: 'Tier 1' },
+    { id: 2, name: 'Bijan Robinson', position: 'RB', team: 'N/A', adp: 2.79, tier: 'Tier 1' },
+    { id: 3, name: 'Saquon Barkley', position: 'RB', team: 'N/A', adp: 3.08, tier: 'Tier 1' },
+    { id: 4, name: 'Jahmyr Gibbs', position: 'RB', team: 'N/A', adp: 5.18, tier: 'Tier 1' },
+    { id: 5, name: 'Justin Jefferson', position: 'WR', team: 'N/A', adp: 5.24, tier: 'Tier 1' },
+    { id: 6, name: 'CeeDee Lamb', position: 'WR', team: 'N/A', adp: 5.3, tier: 'Tier 1' },
+    { id: 7, name: 'Derrick Henry', position: 'RB', team: 'N/A', adp: 8.21, tier: 'Tier 2' },
+    { id: 8, name: 'Nico Collins', position: 'WR', team: 'N/A', adp: 9.2, tier: 'Tier 2' },
+    { id: 9, name: 'Brian Thomas Jr.', position: 'WR', team: 'N/A', adp: 11.07, tier: 'Tier 2' },
+    { id: 10, name: 'Malik Nabers', position: 'WR', team: 'N/A', adp: 11.17, tier: 'Tier 2' },
+    { id: 11, name: 'Puka Nacua', position: 'WR', team: 'N/A', adp: 11.42, tier: 'Tier 2' },
+    { id: 12, name: 'Amon-Ra St. Brown', position: 'WR', team: 'N/A', adp: 13.17, tier: 'Tier 2' },
+    { id: 13, name: 'Christian McCaffrey', position: 'RB', team: 'N/A', adp: 13.72, tier: 'Tier 2' },
+    { id: 14, name: 'Ashton Jeanty', position: 'RB', team: 'N/A', adp: 15.02, tier: 'Tier 2' },
+    { id: 15, name: 'De\'Von Achane', position: 'RB', team: 'N/A', adp: 15.35, tier: 'Tier 2' },
+    { id: 16, name: 'Drake London', position: 'WR', team: 'N/A', adp: 17.58, tier: 'Tier 3' },
+    { id: 17, name: 'A.J. Brown', position: 'WR', team: 'N/A', adp: 19.35, tier: 'Tier 3' },
+    { id: 18, name: 'Brock Bowers', position: 'TE', team: 'N/A', adp: 21.05, tier: 'Tier 3' },
+    { id: 19, name: 'Ladd McConkey', position: 'WR', team: 'N/A', adp: 21.11, tier: 'Tier 3' },
+    { id: 20, name: 'Jonathan Taylor', position: 'RB', team: 'N/A', adp: 21.13, tier: 'Tier 3' },
+    { id: 21, name: 'Josh Jacobs', position: 'RB', team: 'N/A', adp: 21.9, tier: 'Tier 3' },
+    { id: 22, name: 'Bucky Irving', position: 'RB', team: 'N/A', adp: 23.48, tier: 'Tier 3' },
+    { id: 23, name: 'Trey McBride', position: 'TE', team: 'N/A', adp: 25.13, tier: 'Tier 4' },
+    { id: 24, name: 'Chase Brown', position: 'RB', team: 'N/A', adp: 25.43, tier: 'Tier 4' },
+    { id: 25, name: 'Josh Allen', position: 'QB', team: 'N/A', adp: 26.35, tier: 'Tier 4' },
+    { id: 26, name: 'Lamar Jackson', position: 'QB', team: 'N/A', adp: 27.65, tier: 'Tier 5' },
+    { id: 27, name: 'Kyren Williams', position: 'RB', team: 'N/A', adp: 27.81, tier: 'Tier 5' },
+    { id: 28, name: 'Tee Higgins', position: 'WR', team: 'N/A', adp: 28.52, tier: 'Tier 5' },
+    { id: 29, name: 'Jaxon Smith-Njigba', position: 'WR', team: 'N/A', adp: 30.13, tier: 'Tier 5' },
+    { id: 30, name: 'Tyreek Hill', position: 'WR', team: 'N/A', adp: 31.02, tier: 'Tier 5' },
+    { id: 31, name: 'Garrett Wilson', position: 'WR', team: 'N/A', adp: 31.42, tier: 'Tier 6' },
+    { id: 32, name: 'Davante Adams', position: 'WR', team: 'N/A', adp: 34.09, tier: 'Tier 6' },
+    { id: 33, name: 'Mike Evans', position: 'WR', team: 'N/A', adp: 34.82, tier: 'Tier 6' },
+    { id: 34, name: 'Breece Hall', position: 'RB', team: 'N/A', adp: 35.15, tier: 'Tier 6' },
+    { id: 35, name: 'James Cook', position: 'RB', team: 'N/A', adp: 36.33, tier: 'Tier 6' },
+    { id: 36, name: 'Jalen Hurts', position: 'QB', team: 'N/A', adp: 36.63, tier: 'Tier 6' },
+    { id: 37, name: 'George Kittle', position: 'TE', team: 'N/A', adp: 36.79, tier: 'Tier 6' },
+    { id: 38, name: 'Jayden Daniels', position: 'QB', team: 'N/A', adp: 36.87, tier: 'Tier 6' },
+    { id: 39, name: 'Kenneth Walker III', position: 'RB', team: 'N/A', adp: 39.52, tier: 'Tier 7' },
+    { id: 40, name: 'Marvin Harrison Jr.', position: 'WR', team: 'N/A', adp: 40.06, tier: 'Tier 7' },
+    { id: 41, name: 'Terry McLaurin', position: 'WR', team: 'N/A', adp: 40.58, tier: 'Tier 7' },
+    { id: 42, name: 'Alvin Kamara', position: 'RB', team: 'N/A', adp: 41.52, tier: 'Tier 7' },
+    { id: 43, name: 'DJ Moore', position: 'WR', team: 'N/A', adp: 43.19, tier: 'Tier 7' },
+    { id: 44, name: 'Omarion Hampton', position: 'RB', team: 'N/A', adp: 43.58, tier: 'Tier 7' },
+    { id: 45, name: 'DK Metcalf', position: 'WR', team: 'N/A', adp: 47.78, tier: 'Tier 8' },
+    { id: 46, name: 'Chuba Hubbard', position: 'RB', team: 'N/A', adp: 48.06, tier: 'Tier 8' },
+    { id: 47, name: 'James Conner', position: 'RB', team: 'N/A', adp: 49.37, tier: 'Tier 8' },
+    { id: 48, name: 'Joe Burrow', position: 'QB', team: 'N/A', adp: 50.19, tier: 'Tier 8' },
+    { id: 49, name: 'Courtland Sutton', position: 'WR', team: 'N/A', adp: 51.58, tier: 'Tier 8' },
+    { id: 50, name: 'DeVonta Smith', position: 'WR', team: 'N/A', adp: 52.82, tier: 'Tier 8' },
+];
+
 const initialTeams = [
   {
     id: 1, name: 'Jeremy', owner: 'Jeremy', roster: [],
@@ -10,12 +64,12 @@ const initialTeams = [
       RB: { current: 0, max: 2 },
       WR: { current: 0, max: 2 },
       TE: { current: 0, max: 1 },
-      FLEX: { current: 0, max: 1 },
-      DP: { current: 0, max: 1 },
+      FLEX: { current: 0, max: 1 }, // RB/WR/TE
+      DP: { current: 0, max: 1 }, // Assuming a generic defensive player slot
       'D/ST': { current: 0, max: 1 },
       K: { current: 0, max: 1 },
       Bench: { current: 0, max: 5 },
-      IR: { current: 0, max: 1 }
+      IR: { current: 0, max: 1 } // Not actively managed for now
     }
   },
   {
@@ -129,7 +183,7 @@ const App = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [playerToDraft, setPlayerToDraft] = useState(null);
   const [teamToDraftTo, setTeamToDraftTo] = useState(null);
-  const [isLoadingPlayers, setIsLoadingPlayers] = useState(true);
+  const [isLoadingPlayers, setIsLoadingPlayers] = useState(false); // Changed to false as data is now static
   const [draftHistory, setDraftHistory] = useState([]);
   const [expandedTiers, setExpandedTiers] = useState({});
   const [expandedSections, setExpandedSections] = useState({
@@ -140,43 +194,12 @@ const App = () => {
   });
   const [message, setMessage] = useState('');
   const messageTimeoutRef = useRef(null);
-
   const playerListRef = useRef(null);
 
   useEffect(() => {
-    const fetchLiveData = async () => {
-      try {
-        setIsLoadingPlayers(true);
-        // This is the fetch call to your Google Apps Script web app
-        const apiUrl = 'https://script.google.com/macros/s/AKfycbw2H7AmZjtPmG4EkkzOEu5lrzcHnDRGC6Bwwyw4tmwMWBTbsJIQ9tPU06NX27PNp2in/exec';
-        
-        const response = await fetch(apiUrl);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        
-        // This is the core fix: normalizing the data to match your app's structure
-        const normalizedData = data.map((player, index) => ({
-          id: index + 1,
-          name: player['Player.Name'] || player.name || 'N/A', // Use Player.Name from your sheet
-          position: player.Position || player.position || 'N/A',
-          team: player.Team || player.team || 'N/A',
-          adp: parseFloat(player['Avg.Rank']) || parseFloat(player.adp) || 999, // Use Avg.Rank
-          tier: `Tier ${player.Tier}` || 'Uncategorized'
-        }));
-        
-        setPlayers(normalizedData);
-      } catch (error) {
-        console.error('Error fetching player data:', error);
-        setPlayers([]); // Fallback to an empty list on error
-        setMessage('Failed to load live player data. Please check the Google Apps Script URL and its settings.');
-      } finally {
-        setIsLoadingPlayers(false);
-      }
-    };
-
-    fetchLiveData();
+    // With static data, we no longer need an asynchronous fetch call.
+    // The data is available as soon as the app loads.
+    setPlayers(mockPlayersData);
   }, []);
 
   useEffect(() => {
@@ -408,6 +431,7 @@ const App = () => {
     );
   };
 
+
   return (
     <div className="min-h-screen bg-gray-100 font-inter text-gray-900 p-4 sm:p-6 lg:p-8 flex flex-col items-center">
       <h1 className="text-4xl font-extrabold text-blue-700 mb-8 mt-4 sm:mt-8 text-center drop-shadow-md">
@@ -421,7 +445,7 @@ const App = () => {
           </p>
           <button
             onClick={handleStartDraft}
-            disabled={isLoadingPlayers}
+            disabled={isLoadingPlayers} // Disable button while loading
             className={`px-8 py-3 rounded-xl text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition duration-300 ease-in-out
               ${isLoadingPlayers
                 ? 'bg-gray-400 cursor-not-allowed'
@@ -449,10 +473,6 @@ const App = () => {
                 <div className="flex justify-center items-center h-full">
                   <p className="text-gray-500">Loading players data...</p>
                 </div>
-              ) : players.length === 0 ? (
-                <p className="text-gray-500 text-center py-8">
-                  No available players. Please check if the Google Apps Script URL is correct.
-                </p>
               ) : availablePlayers.length > 0 ? (
                 <div>
                   {sortedTiers.map(tierName => (
