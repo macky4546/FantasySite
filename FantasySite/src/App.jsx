@@ -1,46 +1,46 @@
 import React, { useState, useEffect, useRef } from 'react';
 // Assuming Tailwind CSS is configured and available globally for styling
 
-// Player Data with custom tier adjustments and full player list
+// Player Data from the uploaded CSV file, with team and custom tier adjustments.
 const mockPlayersData = [
     { id: 1, name: 'JaMarr Chase', position: 'WR', team: 'CIN', adp: 2.05, tier: 'Tier 1' },
     { id: 2, name: 'Bijan Robinson', position: 'RB', team: 'ATL', adp: 2.79, tier: 'Tier 1' },
     { id: 3, name: 'Saquon Barkley', position: 'RB', team: 'PHI', adp: 3.08, tier: 'Tier 1' },
     { id: 4, name: 'Justin Jefferson', position: 'WR', team: 'MIN', adp: 5.24, tier: 'Tier 1' },
     { id: 5, name: 'CeeDee Lamb', position: 'WR', team: 'DAL', adp: 5.3, tier: 'Tier 1' },
-    { id: 6, name: 'Christian McCaffrey', position: 'RB', team: 'SF', adp: 13.72, tier: 'Tier 1' }, // Moved up
-    { id: 7, name: 'Jahmyr Gibbs', position: 'RB', team: 'DET', adp: 5.18, tier: 'Tier 2' }, // Moved down
-    { id: 8, name: 'Derrick Henry', position: 'RB', team: 'BAL', adp: 8.21, tier: 'Tier 2' },
-    { id: 9, name: 'Puka Nacua', position: 'WR', team: 'LAR', adp: 11.42, tier: 'Tier 2' },
-    { id: 10, name: 'Amon-Ra St. Brown', position: 'WR', team: 'DET', adp: 13.17, tier: 'Tier 2' },
-    { id: 11, name: 'Nico Collins', position: 'WR', team: 'HOU', adp: 9.2, tier: 'Tier 2' },
-    { id: 12, name: 'Brian Thomas Jr.', position: 'WR', team: 'JAX', adp: 11.07, tier: 'Tier 2' },
-    { id: 13, name: 'Ashton Jeanty', position: 'RB', team: 'LV', adp: 13.89, tier: 'Tier 2' },
+    { id: 6, name: 'Christian McCaffrey', position: 'RB', team: 'SF', adp: 13.72, tier: 'Tier 1' },
+    { id: 7, name: 'Derrick Henry', position: 'RB', team: 'BAL', adp: 8.21, tier: 'Tier 2' },
+    { id: 8, name: 'Puka Nacua', position: 'WR', team: 'LAR', adp: 11.42, tier: 'Tier 2' },
+    { id: 9, name: 'Amon-Ra St. Brown', position: 'WR', team: 'DET', adp: 13.17, tier: 'Tier 2' },
+    { id: 10, name: 'Nico Collins', position: 'WR', team: 'HOU', adp: 9.2, tier: 'Tier 2' },
+    { id: 11, name: 'Brian Thomas Jr.', position: 'WR', team: 'JAX', adp: 11.07, tier: 'Tier 2' },
+    { id: 12, name: 'Ashton Jeanty', position: 'RB', team: 'LV', adp: 13.89, tier: 'Tier 2' },
+    { id: 13, name: 'Jahmyr Gibbs', position: 'RB', team: 'DET', adp: 5.18, tier: 'Tier 2' },
     { id: 14, name: 'Jonathan Taylor', position: 'RB', team: 'IND', adp: 16.47, tier: 'Tier 3' },
     { id: 15, name: 'A.J. Brown', position: 'WR', team: 'PHI', adp: 16.79, tier: 'Tier 3' },
     { id: 16, name: 'Drake London', position: 'WR', team: 'ATL', adp: 17.23, tier: 'Tier 3' },
     { id: 17, name: 'De\'Von Achane', position: 'RB', team: 'MIA', adp: 17.55, tier: 'Tier 3' },
     { id: 18, name: 'Josh Jacobs', position: 'RB', team: 'GB', adp: 19.16, tier: 'Tier 3' },
-    { id: 19, name: 'Malik Nabers', position: 'WR', team: 'NYG', adp: 11.17, tier: 'Tier 3' }, // Moved down
-    { id: 20, name: 'Breece Hall', position: 'RB', team: 'NYJ', adp: 42.11, tier: 'Tier 3' }, // Tier moved up
-    { id: 21, name: 'Kyren Williams', position: 'RB', team: 'LAR', adp: 24.83, tier: 'Tier 4' },
-    { id: 22, name: 'Josh Allen', position: 'QB', team: 'BUF', adp: 26.08, tier: 'Tier 4' },
-    { id: 23, name: 'Lamar Jackson', position: 'QB', team: 'BAL', adp: 26.7, tier: 'Tier 4' },
-    { id: 24, name: 'Tee Higgins', position: 'WR', team: 'CIN', adp: 28.34, tier: 'Tier 5' }, // Moved down
-    { id: 25, name: 'Chase Brown', position: 'RB', team: 'CIN', adp: 28.53, tier: 'Tier 4' },
-    { id: 26, name: 'Joe Burrow', position: 'QB', team: 'CIN', adp: 47.47, tier: 'Tier 4' }, // Moved up
-    { id: 27, name: 'Brock Bowers', position: 'TE', team: 'LV', adp: 21.57, tier: 'Tier 5' }, // Moved down, per TE notes
-    { id: 28, name: 'Trey McBride', position: 'TE', team: 'ARI', adp: 25.13, tier: 'Tier 4' }, // Moved per TE notes
-    { id: 29, name: 'Tyreek Hill', position: 'WR', team: 'MIA', adp: 32.48, tier: 'Tier 5' },
-    { id: 30, name: 'Mike Evans', position: 'WR', team: 'TB', adp: 28.07, tier: 'Tier 5' },
-    { id: 31, name: 'Jaxon Smith-Njigba', position: 'WR', team: 'SEA', adp: 33.59, tier: 'Tier 5' },
-    { id: 32, name: 'James Cook', position: 'RB', team: 'BUF', adp: 34.37, tier: 'Tier 5' },
-    { id: 33, name: 'Davante Adams', position: 'WR', team: 'NYJ', adp: 35.72, tier: 'Tier 5' },
-    { id: 34, name: 'Jalen Hurts', position: 'QB', team: 'PHI', adp: 36.63, tier: 'Tier 5' },
-    { id: 35, name: 'Sam LaPorta', position: 'TE', team: 'DET', adp: 60.77, tier: 'Tier 5' }, // Moved up
-    { id: 36, name: 'Mark Andrews', position: 'TE', team: 'BAL', adp: 67.7, tier: 'Tier 5' }, // Re-tiered for grouping
-    { id: 37, name: 'Travis Kelce', position: 'TE', team: 'KC', adp: 89.96, tier: 'Tier 5' }, // Re-tiered for grouping
-    { id: 38, name: 'Jayden Daniels', position: 'QB', team: 'WAS', adp: 33.78, tier: 'Tier 6' }, // Moved down
+    { id: 19, name: 'Malik Nabers', position: 'WR', team: 'NYG', adp: 11.17, tier: 'Tier 3' },
+    { id: 20, name: 'Kyren Williams', position: 'RB', team: 'LAR', adp: 24.83, tier: 'Tier 4' },
+    { id: 21, name: 'Josh Allen', position: 'QB', team: 'BUF', adp: 26.08, tier: 'Tier 4' },
+    { id: 22, name: 'Lamar Jackson', position: 'QB', team: 'BAL', adp: 26.7, tier: 'Tier 4' },
+    { id: 23, name: 'Chase Brown', position: 'RB', team: 'CIN', adp: 28.53, tier: 'Tier 4' },
+    { id: 24, name: 'Joe Burrow', position: 'QB', team: 'CIN', adp: 47.47, tier: 'Tier 4' },
+    { id: 25, name: 'Trey McBride', position: 'TE', team: 'ARI', adp: 25.13, tier: 'Tier 4' },
+    { id: 26, name: 'Breece Hall', position: 'RB', team: 'NYJ', adp: 42.11, tier: 'Tier 3' },
+    { id: 27, name: 'Tee Higgins', position: 'WR', team: 'CIN', adp: 28.34, tier: 'Tier 5' },
+    { id: 28, name: 'Tyreek Hill', position: 'WR', team: 'MIA', adp: 32.48, tier: 'Tier 5' },
+    { id: 29, name: 'Mike Evans', position: 'WR', team: 'TB', adp: 28.07, tier: 'Tier 5' },
+    { id: 30, name: 'Jaxon Smith-Njigba', position: 'WR', team: 'SEA', adp: 33.59, tier: 'Tier 5' },
+    { id: 31, name: 'James Cook', position: 'RB', team: 'BUF', adp: 34.37, tier: 'Tier 5' },
+    { id: 32, name: 'Davante Adams', position: 'WR', team: 'NYJ', adp: 35.72, tier: 'Tier 5' },
+    { id: 33, name: 'Jalen Hurts', position: 'QB', team: 'PHI', adp: 36.63, tier: 'Tier 5' },
+    { id: 34, name: 'Sam LaPorta', position: 'TE', team: 'DET', adp: 60.77, tier: 'Tier 5' },
+    { id: 35, name: 'Mark Andrews', position: 'TE', team: 'BAL', adp: 67.7, tier: 'Tier 5' },
+    { id: 36, name: 'Travis Kelce', position: 'TE', team: 'KC', adp: 89.96, tier: 'Tier 5' },
+    { id: 37, name: 'Brock Bowers', position: 'TE', team: 'LV', adp: 21.57, tier: 'Tier 5' },
+    { id: 38, name: 'Jayden Daniels', position: 'QB', team: 'WAS', adp: 33.78, tier: 'Tier 6' },
     { id: 39, name: 'Garrett Wilson', position: 'WR', team: 'NYJ', adp: 39.3, tier: 'Tier 6' },
     { id: 40, name: 'Marvin Harrison Jr.', position: 'WR', team: 'ARI', adp: 40.11, tier: 'Tier 6' },
     { id: 41, name: 'Kenneth Walker III', position: 'RB', team: 'SEA', adp: 40.47, tier: 'Tier 6' },
@@ -63,16 +63,16 @@ const mockPlayersData = [
     { id: 58, name: 'Calvin Ridley', position: 'WR', team: 'TEN', adp: 58.46, tier: 'Tier 9' },
     { id: 59, name: 'Tetairoa McMillan', position: 'WR', team: 'CAR', adp: 60.49, tier: 'Tier 9' },
     { id: 60, name: 'D\'Andre Swift', position: 'RB', team: 'CHI', adp: 60.49, tier: 'Tier 9' },
-    { id: 61, name: 'Rachaad White', position: 'RB', team: 'TB', adp: 131.68, tier: 'Tier 9' }, // Moved up
-    { id: 62, name: 'Omarion Hampton', position: 'RB', team: 'LAC', adp: 40.42, tier: 'Tier 9' }, // Moved down
+    { id: 61, name: 'Rachaad White', position: 'RB', team: 'TB', adp: 131.68, tier: 'Tier 9' },
+    { id: 62, name: 'Omarion Hampton', position: 'RB', team: 'LAC', adp: 40.42, tier: 'Tier 9' },
     { id: 63, name: 'Tony Pollard', position: 'RB', team: 'TEN', adp: 63.36, tier: 'Tier 10' },
     { id: 64, name: 'Isiah Pacheco', position: 'RB', team: 'KC', adp: 64.33, tier: 'Tier 10' },
     { id: 65, name: 'Patrick Mahomes II', position: 'QB', team: 'KC', adp: 64.73, tier: 'Tier 10' },
     { id: 66, name: 'Jaylen Waddle', position: 'WR', team: 'MIA', adp: 66.58, tier: 'Tier 10' },
     { id: 67, name: 'RJ Harvey', position: 'RB', team: 'DEN', adp: 66.68, tier: 'Tier 10' },
     { id: 68, name: 'Aaron Jones Sr.', position: 'RB', team: 'MIN', adp: 69.08, tier: 'Tier 10' },
-    { id: 69, name: 'Javonte Williams', position: 'RB', team: 'DAL', adp: 106.34, tier: 'Tier 10' }, // Moved up
-    { id: 70, name: 'Jameson Williams', position: 'WR', team: 'DET', adp: 48.22, tier: 'Tier 10' }, // Tier moved down
+    { id: 69, name: 'Javonte Williams', position: 'RB', team: 'DAL', adp: 106.34, tier: 'Tier 10' },
+    { id: 70, name: 'Jameson Williams', position: 'WR', team: 'DET', adp: 48.22, tier: 'Tier 10' },
     { id: 71, name: 'Rashee Rice', position: 'WR', team: 'KC', adp: 70.91, tier: 'Tier 11' },
     { id: 72, name: 'Baker Mayfield', position: 'QB', team: 'TB', adp: 71.35, tier: 'Tier 11' },
     { id: 73, name: 'Kaleb Johnson', position: 'RB', team: 'PIT', adp: 72.33, tier: 'Tier 11' },
@@ -351,6 +351,7 @@ const App = () => {
   const [message, setMessage] = useState('');
   const messageTimeoutRef = useRef(null);
   const playerListRef = useRef(null);
+  const [showSkipConfirmation, setShowSkipConfirmation] = useState(false);
 
   useEffect(() => {
     setPlayers(mockPlayersData);
@@ -466,6 +467,44 @@ const App = () => {
     }
   };
 
+  const handleSkipPick = (team) => {
+    setShowSkipConfirmation(true);
+    setTeamToDraftTo(team);
+  };
+
+  const confirmSkip = () => {
+    if (!teamToDraftTo) return;
+
+    const skippedPickPlayer = {
+      id: `skipped-pick-${currentPickIndex + 1}`,
+      name: 'N/A',
+      position: 'N/A',
+      team: 'N/A',
+      adp: null,
+      tier: 'N/A',
+      isDrafted: true,
+      draftedBy: teamToDraftTo.id,
+      draftedPickNumber: currentPickIndex + 1,
+      draftedSlotType: 'N/A',
+    };
+
+    setPlayers(prevPlayers => [...prevPlayers, skippedPickPlayer]);
+    setTeams(prevTeams =>
+      prevTeams.map(t => {
+        if (t.id === teamToDraftTo.id) {
+          const updatedRosterSlots = { ...t.rosterSlots };
+          return { ...t, roster: [...t.roster, skippedPickPlayer], rosterSlots: updatedRosterSlots };
+        }
+        return t;
+      })
+    );
+
+    setDraftHistory(prevHistory => [...prevHistory, { player: skippedPickPlayer, team: teamToDraftTo }]);
+    setCurrentPickIndex(prevIndex => prevIndex + 1);
+    setShowSkipConfirmation(false);
+    setTeamToDraftTo(null);
+  };
+
   const confirmDraft = () => {
     if (!playerToDraft || !teamToDraftTo) return;
 
@@ -509,17 +548,18 @@ const App = () => {
     const lastPick = draftHistory[draftHistory.length - 1];
     const { player: lastDraftedPlayer, team: draftingTeam } = lastPick;
 
-    setPlayers(prevPlayers =>
-      prevPlayers.map(p =>
+    const updatedPlayers = lastDraftedPlayer.name === 'N/A'
+      ? players.filter(p => p.id !== lastDraftedPlayer.id)
+      : players.map(p =>
         p.id === lastDraftedPlayer.id ? { ...p, isDrafted: false, draftedBy: undefined, draftedPickNumber: undefined, draftedSlotType: undefined } : p
-      )
-    );
+      );
+    setPlayers(updatedPlayers);
 
     setTeams(prevTeams =>
       prevTeams.map(t => {
         if (t.id === draftingTeam.id) {
           const updatedRosterSlots = { ...t.rosterSlots };
-          if (updatedRosterSlots[lastDraftedPlayer.draftedSlotType]) {
+          if (updatedRosterSlots[lastDraftedPlayer.draftedSlotType] && lastDraftedPlayer.draftedSlotType !== 'N/A') {
             updatedRosterSlots[lastDraftedPlayer.draftedSlotType].current--;
           }
           return { ...t, roster: t.roster.filter(p => p.id !== lastDraftedPlayer.id), rosterSlots: updatedRosterSlots };
@@ -535,6 +575,11 @@ const App = () => {
   const cancelDraftConfirmation = () => {
     setShowConfirmation(false);
     setPlayerToDraft(null);
+    setTeamToDraftTo(null);
+  };
+
+  const cancelSkipConfirmation = () => {
+    setShowSkipConfirmation(false);
     setTeamToDraftTo(null);
   };
 
@@ -577,6 +622,36 @@ const App = () => {
               className="px-5 py-2 rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out shadow-md hover:shadow-lg"
             >
               Draft Player
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const SkipConfirmationModal = ({ team, onConfirm, onCancel }) => {
+    if (!team) return null;
+
+    return (
+      <div className="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4 z-50">
+        <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full transform transition-all duration-300 scale-100 opacity-100">
+          <h3 className="text-xl font-bold text-gray-800 mb-4">Confirm Skip Pick</h3>
+          <p className="text-gray-700 mb-6">
+            Are you sure you want to skip this pick for <span className="font-semibold text-green-600">{team.name}</span>?
+            The pick will be filled with a placeholder and the draft will proceed.
+          </p>
+          <div className="flex justify-end space-x-3">
+            <button
+              onClick={onCancel}
+              className="px-5 py-2 rounded-lg text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={onConfirm}
+              className="px-5 py-2 rounded-lg text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition duration-200 ease-in-out shadow-md hover:shadow-lg"
+            >
+              Skip Pick
             </button>
           </div>
         </div>
@@ -715,17 +790,30 @@ const App = () => {
                       <p className="text-2xl font-semibold text-green-700">
                         {currentTeam ? `${currentTeam.name} is on the clock!` : 'Loading...'}
                       </p>
-                      <button
-                        onClick={handleUndoLastPick}
-                        disabled={draftHistory.length === 0}
-                        className={`mt-4 px-6 py-2 rounded-lg text-sm font-medium transition duration-200 ease-in-out
-                          ${draftHistory.length > 0
-                            ? 'bg-red-500 text-white hover:bg-red-600 shadow-md hover:shadow-lg'
-                            : 'bg-gray-300 text-gray-600 cursor-not-allowed'
-                          }`}
-                      >
-                        Undo Last Pick
-                      </button>
+                      <div className="mt-4 flex justify-center space-x-3">
+                        <button
+                          onClick={handleUndoLastPick}
+                          disabled={draftHistory.length === 0}
+                          className={`px-6 py-2 rounded-lg text-sm font-medium transition duration-200 ease-in-out
+                            ${draftHistory.length > 0
+                              ? 'bg-red-500 text-white hover:bg-red-600 shadow-md hover:shadow-lg'
+                              : 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                            }`}
+                        >
+                          Undo Last Pick
+                        </button>
+                        <button
+                          onClick={() => handleSkipPick(currentTeam)}
+                          disabled={!currentTeam}
+                          className={`px-6 py-2 rounded-lg text-sm font-medium transition duration-200 ease-in-out
+                            ${currentTeam
+                              ? 'bg-yellow-500 text-white hover:bg-yellow-600 shadow-md hover:shadow-lg'
+                              : 'bg-gray-300 text-gray-600 cursor-not-allowed'
+                            }`}
+                        >
+                          Skip Pick
+                        </button>
+                      </div>
                     </div>
                   ) : (
                     <p className="text-center text-2xl font-bold text-green-700">Draft Complete!</p>
@@ -890,6 +978,13 @@ const App = () => {
           team={teamToDraftTo}
           onConfirm={confirmDraft}
           onCancel={cancelDraftConfirmation}
+        />
+      )}
+      {showSkipConfirmation && (
+        <SkipConfirmationModal
+          team={teamToDraftTo}
+          onConfirm={confirmSkip}
+          onCancel={cancelSkipConfirmation}
         />
       )}
     </div>
