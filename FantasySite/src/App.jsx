@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import playersData from './data/players';
 import teamsData from './data/teams';
 import { determineSlotForPlayer, allocateRosterSlot } from './utils/draftUtils';
+import DraftConfirmationModal from './components/DraftConfirmationModal';
 
 const App = () => {
   const [players, setPlayers] = useState([]);
@@ -281,68 +282,6 @@ const App = () => {
     }));
   };
   
-  const DraftConfirmationModal = ({ player, team, onConfirm, onCancel }) => {
-    if (!player || !team) return null;
-
-    return (
-      <div className="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4 z-50">
-        <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full transform transition-all duration-300 scale-100 opacity-100">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">Confirm Draft Pick</h3>
-          <p className="text-gray-700 mb-6">
-            Are you sure you want to draft <span className="font-semibold text-blue-600">{player.name}</span>
-            <span className="text-gray-500"> ({player.position} - {player.team})</span> to <span className="font-semibold text-green-600">{team.name}</span>?
-            <br />
-            <span className="text-sm text-gray-500">This player will be placed in the **{player.draftedSlotType}** slot.</span>
-          </p>
-          <div className="flex justify-end space-x-3">
-            <button
-              onClick={onCancel}
-              className="px-5 py-2 rounded-lg text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={onConfirm}
-              className="px-5 py-2 rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out shadow-md hover:shadow-lg"
-            >
-              Draft Player
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const SkipConfirmationModal = ({ team, onConfirm, onCancel }) => {
-    if (!team) return null;
-
-    return (
-      <div className="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center p-4 z-50">
-        <div className="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full transform transition-all duration-300 scale-100 opacity-100">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">Confirm Skip Pick</h3>
-          <p className="text-gray-700 mb-6">
-            Are you sure you want to skip this pick for <span className="font-semibold text-green-600">{team.name}</span>?
-            The pick will be filled with a placeholder and the draft will proceed.
-          </p>
-          <div className="flex justify-end space-x-3">
-            <button
-              onClick={onCancel}
-              className="px-5 py-2 rounded-lg text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 transition duration-200 ease-in-out"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={onConfirm}
-              className="px-5 py-2 rounded-lg text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition duration-200 ease-in-out shadow-md hover:shadow-lg"
-            >
-              Skip Pick
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="min-h-screen bg-gray-100 font-inter text-gray-900 p-4 sm:p-6 lg:p-8 flex flex-col items-center">
       <h1 className="text-4xl font-extrabold text-blue-700 mb-8 mt-4 sm:mt-8 text-center drop-shadow-md">
