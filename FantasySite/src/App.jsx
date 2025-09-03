@@ -4,6 +4,7 @@ import playersData from './data/players';
 import teamsData from './data/teams';
 import { determineSlotForPlayer, allocateRosterSlot } from './utils/draftUtils';
 import DraftConfirmationModal from './components/DraftConfirmationModal';
+import SkipConfirmationModal from './components/SkipConfirmationModal';
 
 const App = () => {
   const [players, setPlayers] = useState([]);
